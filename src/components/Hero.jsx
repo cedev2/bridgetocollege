@@ -1,74 +1,78 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowRight, GraduationCap, CheckCircle } from 'lucide-react';
 
-const Hero = () => {
+const Hero = ({ user }) => {
+    const images = ['/bg1.jpg', '/bg2.jpg', '/bg3.jpg', '/bg4.jpg'];
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prev) => (prev + 1) % images.length);
+        }, 5000);
+        return () => clearInterval(interval);
+    }, []);
     return (
-        <section id="home" className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
-            {/* Background Accents */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10">
-                <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary-100/50 rounded-full blur-3xl animate-pulse" />
-                <div className="absolute bottom-[10%] right-[-5%] w-[30%] h-[30%] bg-accent-100/30 rounded-full blur-3xl" />
+        <section id="home" className="relative z-0 pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden">
+            {/* Slider Background */}
+            <div className="absolute inset-0 -z-20 w-full h-full bg-slate-900 overflow-hidden">
+                <AnimatePresence mode="wait">
+                    <motion.img
+                        key={currentImageIndex}
+                        src={images[currentImageIndex]}
+                        initial={{ opacity: 0, scale: 1.05 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.8 }}
+                        alt="Background Slider"
+                        className="absolute inset-0 w-full h-full object-cover"
+                    />
+                </AnimatePresence>
             </div>
+            {/* Dark Overlay for Text Readability */}
+            <div className="absolute inset-0 bg-slate-900/70 -z-10" />
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center lg:text-left grid lg:grid-cols-2 gap-12 items-center">
+                <div className="text-center max-w-4xl mx-auto flex flex-col items-center">
                     <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6 }}
                     >
-                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-50 border border-primary-100 text-primary-700 text-sm font-semibold mb-6">
+                        <div className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white text-sm font-semibold mb-8">
                             <GraduationCap className="w-4 h-4" />
                             <span>Your Trusted Partner for Higher Education</span>
                         </div>
 
-                        <h1 className="text-5xl lg:text-7xl mb-6 leading-tight">
-                            Unlock Your Path to <span className="text-primary-600">Global Education</span>
+                        <h1 className="text-5xl lg:text-7xl mb-8 leading-tight font-display font-bold text-white drop-shadow-xl">
+                            Unlock Your Path to <br /><span className="text-primary-400">Global Education</span>
                         </h1>
 
-                        <p className="text-xl text-slate-600 mb-8 max-w-2xl">
+                        <p className="text-xl text-slate-200 mb-10 max-w-2xl mx-auto drop-shadow-md leading-relaxed">
                             We empower Rwandan students to achieve their dreams of higher education in Rwanda, the United States, and beyond through personalized guidance.
                         </p>
 
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                            <a href="#get-started" className="btn-primary flex items-center justify-center gap-2 group">
-                                Start Your Application
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                            <Link to={user ? (user.role === 'admin' ? "/admin-dashboard" : "/dashboard") : "/register"} className="btn-primary" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                                {user ? (user.role === 'admin' ? "View Admin Dashboard" : "View My Dashboard") : "Start Your Application"}
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                            </a>
-                            <a href="#services" className="btn-secondary flex items-center justify-center gap-2">
+                            </Link>
+                            <a href="/#services" className="px-6 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 text-white font-bold hover:bg-white/20 transition-all flex items-center justify-center gap-2">
                                 Explore Services
                             </a>
                         </div>
 
-                        <div className="mt-10 flex items-center gap-6 justify-center lg:justify-start text-sm font-medium text-slate-500">
+                        <div className="mt-12 flex flex-wrap items-center justify-center gap-6 text-sm font-medium text-slate-200 bg-black/20 w-fit mx-auto px-8 py-4 rounded-3xl backdrop-blur-md border border-white/10">
                             <div className="flex items-center gap-2">
-                                <CheckCircle className="w-5 h-5 text-green-500" />
+                                <CheckCircle className="w-5 h-5 text-green-400" />
                                 <span>95% Success Rate</span>
                             </div>
                             <div className="flex items-center gap-2">
-                                <CheckCircle className="w-5 h-5 text-green-500" />
+                                <CheckCircle className="w-5 h-5 text-green-400" />
                                 <span>169+ Students Helped</span>
                             </div>
                         </div>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className="relative"
-                    >
-                        <div className="relative z-10 rounded-3xl overflow-hidden shadow-2xl border-8 border-white">
-                            <img
-                                src="https://images.unsplash.com/photo-1523050335392-9ae8a27d011e?auto=format&fit=crop&q=80&w=1000"
-                                alt="Students celebrating graduation"
-                                className="w-full h-auto object-cover"
-                            />
-                        </div>
-                        {/* Decorative Elements */}
-                        <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-accent-400 rounded-2xl -z-10 rotate-12" />
-                        <div className="absolute -top-6 -left-6 w-24 h-24 bg-primary-600 rounded-full blur-xl opacity-20 -z-10" />
                     </motion.div>
                 </div>
             </div>

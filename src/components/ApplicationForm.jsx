@@ -1,244 +1,285 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, User, Mail, Phone, GraduationCap, MapPin, Calendar, Clock, ChevronRight } from 'lucide-react';
+import { Send, User, Mail, Phone, GraduationCap, MapPin, Calendar, Clock, ChevronRight, FileText, Globe, School, CheckCircle } from 'lucide-react';
 
-const ApplicationForm = () => {
+const universities = [
+    "Berea College", "Rollins College", "Colby College", "Trinity College", "Grinnell College",
+    "University of Chicago", "Vanderbilt University", "Washington and Lee University", "Emory University",
+    "University of Southern California", "Oberlin College", "Wake Forest University", "University of Richmond",
+    "Clark University", "Davidson College", "University of Notre Dame", "Stanford University",
+    "Dartmouth College", "Brown University", "Columbia University", "Duke University",
+    "University of Pennsylvania", "Pomona College", "Swarthmore College", "Bowdoin College",
+    "Haverford College", "Harvard University", "Yale University", "Princeton University",
+    "Massachusetts Institute of Technology", "Amherst College", "African Leadership University (ALU)",
+    "Kepler College", "Other"
+];
+
+const ApplicationForm = ({ user }) => {
+    const navigate = useNavigate();
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
+        full_name: user?.full_name || '',
+        email: user?.email || '',
         phone: '',
-        residence: '',
-        educationLevel: '',
-        targetCountry: '',
-        message: ''
+        contact_method: 'Email',
+        applicant_type: '',
+        application_timing: 'Regular decision applicant',
+        major_highschool: '',
+        gpa: '',
+        target_countries: 'United States',
+        interested_universities: [],
+        package: 'Essential',
+        started_application: 'No',
+        intended_field: '',
+        start_year: '',
+        goals: '',
+        has_transcripts: 'No'
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [isSubmitted, setIsSubmitted] = useState(false);
+    const [error, setError] = useState('');
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value, type, checked } = e.target;
+        if (type === 'checkbox') {
+            const currentUnis = [...formData.interested_universities];
+            if (checked) currentUnis.push(value);
+            else currentUnis.splice(currentUnis.indexOf(value), 1);
+            setFormData({ ...formData, interested_universities: currentUnis });
+        } else {
+            setFormData({ ...formData, [name]: value });
+        }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        // Simulate API call
-        setTimeout(() => {
+        setError('');
+
+        try {
+            const response = await fetch('http://localhost/brigdetocollege/backend/submit_application.php', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${user.token}`
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    target_countries: formData.target_countries,
+                    interested_universities: formData.interested_universities.join(', ')
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                navigate('/dashboard');
+            } else {
+                setError(data.error || 'Submission failed');
+            }
+        } catch (err) {
+            setError('Could not connect to server.');
+        } finally {
             setIsSubmitting(false);
-            setIsSubmitted(true);
-        }, 2000);
+        }
     };
 
-    const nextStep = () => setStep(step + 1);
-    const prevStep = () => setStep(step - 1);
-
     return (
-        <section id="get-started" className="py-24 bg-slate-50">
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="text-center mb-12">
-                    <h2 className="text-4xl mb-4">Ready to Start Your <span className="text-primary-600">Journey?</span></h2>
-                    <p className="text-slate-600">Fill out the form below and we'll get back to you within 24 hours.</p>
+        <div className="p-6 lg:p-10 w-full bg-slate-50">
+            <div className="max-w-5xl mx-auto">
+                <div className="text-center mb-10">
+                    <h2 className="text-3xl font-display font-bold mb-3 tracking-tight text-slate-900">🎓 Bridge to College <span className="text-primary-600">Application Form</span></h2>
+                    <p className="text-slate-600 max-w-2xl mx-auto">Please fill out this form so we can understand your goals and how best to support you.</p>
                 </div>
 
-                <div className="bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100">
-                    <div className="grid md:grid-cols-3">
-                        {/* Sidebar info */}
-                        <div className="bg-primary-900 p-8 text-white hidden md:block">
-                            <h3 className="text-xl font-display font-bold mb-6">Contact Info</h3>
+                <div className="bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-slate-100 flex flex-col md:flex-row">
+                    <div className="md:w-1/3 bg-primary-950 p-12 text-white relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary-800/20 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+                        <div className="relative z-10">
+                            <h3 className="text-2xl font-bold mb-8">Important Notice</h3>
+                            <ul className="space-y-6 text-primary-100/80 text-sm leading-relaxed">
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded-full bg-primary-800 flex items-center justify-center shrink-0">1</div>
+                                    <p>This form can only be submitted once per account.</p>
+                                </li>
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded-full bg-primary-800 flex items-center justify-center shrink-0">2</div>
+                                    <p>You will not be able to edit your responses after submitting.</p>
+                                </li>
+                                <li className="flex gap-4">
+                                    <div className="w-6 h-6 rounded-full bg-accent-500/20 text-accent-400 flex items-center justify-center shrink-0">⚠️</div>
+                                    <p className="text-white font-medium italic">We will contact you via email or phone within 24–48 hours.</p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div className="md:w-2/3 p-8 lg:p-14">
+                        {error && (
+                            <div className="mb-8 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-600 text-sm">
+                                {error}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleSubmit} className="space-y-10">
+                            {/* Section 1: Contact & Basic Info */}
                             <div className="space-y-6">
-                                <div className="flex gap-4">
-                                    <Phone className="w-5 h-5 text-accent-400 shrink-0" />
-                                    <div>
-                                        <p className="text-sm text-primary-300">WhatsApp</p>
-                                        <p className="font-medium">+250 791 799 081</p>
+                                <h4 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3">Personal & Contact Details</h4>
+                                <div className="grid sm:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Full Name *</label>
+                                        <input type="text" name="full_name" required value={formData.full_name} onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Email Address *</label>
+                                        <input type="email" name="email" required value={formData.email} onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none" />
                                     </div>
                                 </div>
-                                <div className="flex gap-4">
-                                    <Mail className="w-5 h-5 text-accent-400 shrink-0" />
-                                    <div>
-                                        <p className="text-sm text-primary-300">Email</p>
-                                        <p className="font-medium">bridgetocollege.rwanda@gmail.com</p>
+                                <div className="grid sm:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Phone Number *</label>
+                                        <input type="tel" name="phone" required placeholder="+250..." onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Preferred Contact Method *</label>
+                                        <select name="contact_method" required onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none">
+                                            <option>Email</option>
+                                            <option>WhatsApp</option>
+                                            <option>Phone Call</option>
+                                            <option>SMS</option>
+                                        </select>
                                     </div>
                                 </div>
-                                <div className="flex gap-4">
-                                    <Clock className="w-5 h-5 text-accent-400 shrink-0" />
-                                    <div>
-                                        <p className="text-sm text-primary-300">Response Time</p>
-                                        <p className="font-medium">Within 24 Hours</p>
+                            </div>
+
+                            {/* Section 2: Academic Profile */}
+                            <div className="space-y-6">
+                                <h4 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3">Academic Background</h4>
+                                <div className="grid sm:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Applying as: *</label>
+                                        <select name="applicant_type" required onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none">
+                                            <option value="">Choose Option</option>
+                                            <option value="High school graduate (first-year/freshman) applicant">High school graduate (first-year/freshman)</option>
+                                            <option value="University Student (transfer applicant)">University Student (transfer)</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Application Timing:</label>
+                                        <select name="application_timing" onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none">
+                                            <option>Early Action applicant</option>
+                                            <option>Early Decision applicant</option>
+                                            <option>Regular decision applicant</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="grid sm:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Major/High school Major *</label>
+                                        <input type="text" name="major_highschool" required placeholder="PCM, HEG, Economics, etc." onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">GPA / Average Grades *</label>
+                                        <input type="text" name="gpa" required placeholder="e.g. 75/100, 4.0/4.0" onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none" />
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="mt-12 p-4 bg-primary-800/50 rounded-2xl border border-primary-700">
-                                <p className="text-sm text-primary-200 italic">
-                                    "Bridge to college helped me get into African Leadership University. Their support was incredible!"
-                                </p>
-                                <div className="mt-3 flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full bg-accent-400 text-primary-900 flex items-center justify-center font-bold text-xs">AM</div>
-                                    <div>
-                                        <p className="text-xs font-bold">Alice M.</p>
-                                        <p className="text-[10px] text-primary-300">Now at ALU</p>
+                            {/* Section 3: Goals */}
+                            <div className="space-y-6">
+                                <h4 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3">Future Goals</h4>
+                                <div className="grid sm:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Target Countries *</label>
+                                        <select name="target_countries" required onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none">
+                                            <option>United States</option>
+                                            <option>Rwanda</option>
+                                            <option>Other</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Intended Field of Study *</label>
+                                        <input type="text" name="intended_field" required placeholder="Engineering, Biology, etc." onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none" />
+                                    </div>
+                                </div>
+                                
+                                <div className="space-y-3">
+                                    <label className="text-sm font-semibold text-slate-700">Universities of Interest (Select all that apply) *</label>
+                                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-48 overflow-y-auto p-4 bg-slate-50 rounded-2xl border border-slate-100 shadow-inner">
+                                        {universities.map(uni => (
+                                            <label key={uni} className="flex items-center gap-2 text-xs text-slate-600 cursor-pointer hover:text-primary-600 transition-all">
+                                                <input type="checkbox" value={uni} onChange={handleChange} className="rounded border-slate-300 text-primary-600 focus:ring-primary-500" />
+                                                {uni}
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="grid sm:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Package *</label>
+                                        <select name="package" required onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none">
+                                            <option>Essential</option>
+                                            <option>Comprehensive</option>
+                                            <option>Premium</option>
+                                            <option>Rwandan</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Intended Start Year *</label>
+                                        <select name="start_year" required onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none">
+                                            <option value="">Select Year</option>
+                                            <option>2026</option>
+                                            <option>2027</option>
+                                            <option>2028</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {/* Form */}
-                        <div className="md:col-span-2 p-8 lg:p-12">
-                            <AnimatePresence mode="wait">
-                                {!isSubmitted ? (
-                                    <motion.form
-                                        initial={{ opacity: 0, x: 20 }}
-                                        animate={{ opacity: 1, x: 0 }}
-                                        exit={{ opacity: 0, x: -20 }}
-                                        onSubmit={handleSubmit}
-                                        className="space-y-6"
-                                    >
-                                        <div className="grid sm:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                                                    <User className="w-4 h-4 text-primary-600" /> Full Name
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="fullName"
-                                                    required
-                                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all outline-none"
-                                                    placeholder="John Doe"
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                                                    <Mail className="w-4 h-4 text-primary-600" /> Email Address
-                                                </label>
-                                                <input
-                                                    type="email"
-                                                    name="email"
-                                                    required
-                                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all outline-none"
-                                                    placeholder="john@example.com"
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                        </div>
+                            {/* Section 4: Final Questions */}
+                            <div className="space-y-6">
+                                <h4 className="text-lg font-bold text-slate-800 border-b border-slate-100 pb-3">Final Details</h4>
+                                <div className="grid sm:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Started Application? *</label>
+                                        <select name="started_application" required onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none">
+                                            <option>No</option>
+                                            <option>Yes</option>
+                                        </select>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-semibold text-slate-700">Have Transcripts? (Grade 10-12) *</label>
+                                        <select name="has_transcripts" required onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none">
+                                            <option>No</option>
+                                            <option>Yes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-sm font-semibold text-slate-700">Tell us more about yourself (Optional)</label>
+                                    <textarea name="goals" rows="4" onChange={handleChange} className="form-input w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none resize-none" placeholder="Goals, hobbies, challenges, etc."></textarea>
+                                </div>
+                            </div>
 
-                                        <div className="grid sm:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                                                    <Phone className="w-4 h-4 text-primary-600" /> Phone Number
-                                                </label>
-                                                <input
-                                                    type="tel"
-                                                    name="phone"
-                                                    required
-                                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all outline-none"
-                                                    placeholder="+250 ..."
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                                                    <MapPin className="w-4 h-4 text-primary-600" /> City of Residence
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    name="residence"
-                                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all outline-none"
-                                                    placeholder="Kigali"
-                                                    onChange={handleChange}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="grid sm:grid-cols-2 gap-6">
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                                                    Target Region
-                                                </label>
-                                                <select
-                                                    name="targetCountry"
-                                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all outline-none"
-                                                    onChange={handleChange}
-                                                >
-                                                    <option value="">Select Region</option>
-                                                    <option value="Rwanda">Rwanda</option>
-                                                    <option value="USA">United States</option>
-                                                    <option value="Europe">Europe</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-                                                    Current Education Level
-                                                </label>
-                                                <select
-                                                    name="educationLevel"
-                                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all outline-none"
-                                                    onChange={handleChange}
-                                                >
-                                                    <option value="">Select Level</option>
-                                                    <option value="High School Senior">High School Senior</option>
-                                                    <option value="High School Graduate">High School Graduate</option>
-                                                    <option value="University Student">University Student</option>
-                                                    <option value="Other">Other</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div className="space-y-2">
-                                            <label className="text-sm font-semibold text-slate-700">How can we help you?</label>
-                                            <textarea
-                                                name="message"
-                                                rows="4"
-                                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent transition-all outline-none resize-none"
-                                                placeholder="Tell us about your goals..."
-                                                onChange={handleChange}
-                                            ></textarea>
-                                        </div>
-
-                                        <button
-                                            type="submit"
-                                            disabled={isSubmitting}
-                                            className={`w-full py-4 rounded-xl bg-primary-600 text-white font-bold text-lg shadow-lg shadow-primary-500/30 hover:bg-primary-700 transition-all flex items-center justify-center gap-2 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-                                        >
-                                            {isSubmitting ? (
-                                                <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                            ) : (
-                                                <>
-                                                    Submit Application <ChevronRight className="w-5 h-5" />
-                                                </>
-                                            )}
-                                        </button>
-                                    </motion.form>
+                            <button
+                                type="submit"
+                                disabled={isSubmitting}
+                                className={`w-full py-5 rounded-2xl bg-primary-600 text-white font-bold text-xl shadow-2xl shadow-primary-500/30 hover:bg-primary-700 hover:-translate-y-1 transition-all flex items-center justify-center gap-3 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+                            >
+                                {isSubmitting ? (
+                                    <div className="w-8 h-8 border-3 border-white/30 border-t-white rounded-full animate-spin" />
                                 ) : (
-                                    <motion.div
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className="text-center py-12"
-                                    >
-                                        <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <Send className="w-10 h-10" />
-                                        </div>
-                                        <h3 className="text-3xl font-display font-bold mb-4">Application Sent!</h3>
-                                        <p className="text-slate-600 mb-8">
-                                            Thank you for choosing Bridge to College. We have received your information and will contact you via email or WhatsApp within 24 hours.
-                                        </p>
-                                        <button
-                                            onClick={() => setIsSubmitted(false)}
-                                            className="text-primary-600 font-bold hover:underline"
-                                        >
-                                            Submit another application
-                                        </button>
-                                    </motion.div>
+                                    <>
+                                        Submit Complete Application <ChevronRight className="w-6 h-6" />
+                                    </>
                                 )}
-                            </AnimatePresence>
-                        </div>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     );
 };
 

@@ -1,90 +1,170 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Target, Award } from 'lucide-react';
+import { Shield, Target, Award, Users, Phone, Loader2 } from 'lucide-react';
 
 const About = () => {
+    const [staff, setStaff] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchStaff = async () => {
+            try {
+                const response = await fetch('http://localhost/brigdetocollege/backend/get_staff.php');
+                const data = await response.json();
+                if (data.success) {
+                    setStaff(data.staff);
+                }
+            } catch (error) {
+                console.error('Error fetching staff:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchStaff();
+    }, []);
+
     return (
         <section id="about" className="py-24 bg-white overflow-hidden">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
+                {/* Header Section */}
+                <div className="text-center mb-20">
+                    <motion.h1 
+                        initial={{ opacity: 0, y: -20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-4xl lg:text-5xl font-display font-bold text-slate-900 mb-6"
+                    >
+                        About Bridge to College
+                    </motion.h1>
+                    <motion.p 
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.1 }}
+                        className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed"
+                    >
+                        Empowering students to achieve their higher education dreams through personalized guidance and expert support.
+                    </motion.p>
+                </div>
+
+                {/* Founder's Story Section */}
+                <div className="grid lg:grid-cols-2 gap-16 items-center mb-24">
                     <motion.div
                         initial={{ opacity: 0, x: -30 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                        className="relative"
                     >
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="space-y-4 pt-12">
-                                <img
-                                    src="https://images.unsplash.com/photo-1541339907198-e08756ebafe3?auto=format&fit=crop&q=80&w=500"
-                                    alt="University campus"
-                                    className="rounded-3xl shadow-lg"
-                                />
-                                <div className="bg-accent-400 p-8 rounded-3xl text-primary-900">
-                                    <p className="text-4xl font-display font-bold mb-2">95%</p>
-                                    <p className="font-semibold text-sm uppercase tracking-wider">Success Rate</p>
-                                </div>
-                            </div>
-                            <div className="space-y-4">
-                                <div className="bg-primary-600 p-8 rounded-3xl text-white">
-                                    <p className="text-4xl font-display font-bold mb-2">169+</p>
-                                    <p className="font-semibold text-sm uppercase tracking-wider">Students Helped</p>
-                                </div>
-                                <img
-                                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=500"
-                                    alt="Students studying"
-                                    className="rounded-3xl shadow-lg"
-                                />
-                            </div>
+                        <h2 className="text-3xl font-display font-bold text-slate-900 mb-8">Our Founder's Story</h2>
+                        <div className="space-y-6 text-slate-600 leading-relaxed">
+                            <p>
+                                Bridge to College was founded with a simple yet powerful vision: to make quality higher education 
+                                accessible to every ambitious student, regardless of their background or circumstances.
+                            </p>
+                            <p>
+                                Having navigated the complex world of college applications myself, I understand the challenges 
+                                students face - from understanding requirements to crafting compelling essays and preparing 
+                                for interviews.
+                            </p>
+                            <p>
+                                Our mission is to bridge the gap between dreams and reality, providing the guidance and support 
+                                that every student deserves on their journey to higher education.
+                            </p>
                         </div>
-                        {/* Background decorative blob */}
-                        <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-primary-50 rounded-full blur-3xl opacity-50" />
                     </motion.div>
 
                     <motion.div
                         initial={{ opacity: 0, x: 30 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
+                        className="bg-emerald-50/50 rounded-[2.5rem] p-12 text-center border border-emerald-100/50 relative overflow-hidden"
                     >
-                        <h2 className="text-4xl lg:text-5xl mb-8 leading-tight">
-                            Empowering the Next Generation of <span className="text-primary-600">Global Leaders</span>
-                        </h2>
-                        <p className="text-lg text-slate-600 mb-8 leading-relaxed">
-                            At Bridge to College, we believe that education is the ultimate equalizer. Our mission is to bridge the gap between talented students and world-class educational opportunities.
-                        </p>
-
-                        <div className="space-y-6">
-                            <div className="flex gap-4 p-6 rounded-2xl bg-slate-50 border border-slate-100">
-                                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm text-primary-600 shrink-0">
-                                    <Shield className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <h4 className="text-xl font-bold mb-1">Integrity First</h4>
-                                    <p className="text-slate-500">We provide honest, transparent guidance that puts the student's best interest first.</p>
-                                </div>
+                        <div className="relative z-10">
+                            <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 text-emerald-600">
+                                <Users className="w-10 h-10" />
                             </div>
-                            <div className="flex gap-4 p-6 rounded-2xl bg-slate-50 border border-slate-100">
-                                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm text-primary-600 shrink-0">
-                                    <Target className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <h4 className="text-xl font-bold mb-1">Tailored Excellence</h4>
-                                    <p className="text-slate-500">Every student is unique. Our strategies are customized to individual strengths and goals.</p>
-                                </div>
-                            </div>
-                            <div className="flex gap-4 p-6 rounded-2xl bg-slate-50 border border-slate-100">
-                                <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm text-primary-600 shrink-0">
-                                    <Award className="w-6 h-6" />
-                                </div>
-                                <div>
-                                    <h4 className="text-xl font-bold mb-1">Proven Results</h4>
-                                    <p className="text-slate-500">Our track record speaks for itself with hundreds of successful placements.</p>
-                                </div>
-                            </div>
+                            <h3 className="text-2xl font-display font-bold text-slate-900 mb-2">Founded in 2024</h3>
+                            <p className="text-slate-500">With a passion for education and student success</p>
                         </div>
+                        {/* Decorative elements */}
+                        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-64 h-64 bg-emerald-100/20 rounded-full blur-3xl" />
                     </motion.div>
+                </div>
+
+                {/* Mission & Values Section */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="text-center mb-32"
+                >
+                    <h2 className="text-3xl font-display font-bold text-slate-900 mb-12">Our Mission & Values</h2>
+                    <div className="max-w-5xl mx-auto space-y-8 text-left bg-slate-50/50 p-8 lg:p-12 rounded-[2rem] border border-slate-100">
+                        <p className="text-slate-700 leading-relaxed">
+                            <strong className="text-slate-900">Mission:</strong> To support students in Rwanda through personalized mentorship, essay coaching, admissions advising, and scholarship application support — guiding them step by step from crafting to submitting competitive university applications.
+                        </p>
+                        <p className="text-slate-700 leading-relaxed">
+                            <strong className="text-slate-900">Vision:</strong> To create equitable access to higher education opportunities for every motivated Rwandan student, regardless of background or income.
+                        </p>
+                        <p className="text-slate-700 italic border-t border-slate-200 pt-8 mt-8">
+                            "Our commitment is to bridge the gap between dreams and reality, providing the guidance and support that every student deserves on their journey to higher education."
+                        </p>
+                    </div>
+                </motion.div>
+
+                {/* Meet Our Team Section */}
+                <div className="text-center">
+                    <h2 className="text-3xl font-display font-bold text-slate-900 mb-16">Meet Our Team</h2>
+                    
+                    {loading ? (
+                        <div className="flex justify-center py-20">
+                            <Loader2 className="w-10 h-10 animate-spin text-primary-600" />
+                        </div>
+                    ) : (
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {staff.map((member, index) => (
+                                <motion.div
+                                    key={member.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: index * 0.1 }}
+                                    className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group"
+                                >
+                                    <div className="w-24 h-24 rounded-full overflow-hidden mx-auto mb-6 ring-4 ring-slate-50 group-hover:ring-primary-100 transition-all">
+                                        <img 
+                                            src={member.image_path || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.full_name)}&background=random`} 
+                                            alt={member.full_name} 
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-slate-900 mb-1">{member.full_name}</h3>
+                                    <div className="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider mb-4">
+                                        {member.role}
+                                    </div>
+                                    <p className="text-slate-500 text-sm mb-6 line-clamp-3">
+                                        {member.description}
+                                    </p>
+                                    
+                                    {member.phone && (
+                                        <div className="flex items-center justify-center gap-2 text-slate-400 text-sm mb-6">
+                                            <Phone className="w-4 h-4" />
+                                            <span>{member.phone}</span>
+                                        </div>
+                                    )}
+
+                                    {member.tags && (
+                                        <div className="flex flex-wrap justify-center gap-2">
+                                            {member.tags.split(',').map((tag, i) => (
+                                                <span key={i} className="px-3 py-1 bg-slate-50 text-slate-500 rounded-lg text-xs font-medium border border-slate-100">
+                                                    {tag.trim()}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
+                                </motion.div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </section>

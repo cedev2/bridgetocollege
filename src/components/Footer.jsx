@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Rocket, Instagram, Mail, Phone, ExternalLink } from 'lucide-react';
 
 const Footer = () => {
@@ -8,8 +9,8 @@ const Footer = () => {
                 <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
                     <div className="lg:col-span-1">
                         <div className="flex items-center gap-2 mb-6">
-                            <div className="bg-primary-600 p-2 rounded-xl">
-                                <Rocket className="w-6 h-6 text-white" />
+                            <div className="w-10 h-10 rounded-xl overflow-hidden shadow-sm">
+                                <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
                             </div>
                             <span className="text-2xl font-display font-bold tracking-tight">
                                 Bridge<span className="text-primary-400">to</span>College
@@ -77,8 +78,8 @@ const Footer = () => {
                 <div className="pt-10 border-t border-primary-900 flex flex-col md:flex-row justify-between items-center gap-4 text-primary-400 text-xs">
                     <p>© 2024 Bridge to College. All rights reserved.</p>
                     <div className="flex gap-6">
-                        <a href="#privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-                        <a href="#terms" className="hover:text-white transition-colors">Terms of Service</a>
+                        <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                        <Link to="/terms" className="hover:text-white transition-colors">Terms and Conditions</Link>
                     </div>
                 </div>
             </div>
