@@ -15,6 +15,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
 import TermsAndConditions from './pages/TermsAndConditions.jsx';
 import Pricing from './pages/Pricing.jsx';
 import SuccessStories from './pages/SuccessStories.jsx';
+import Contact from './pages/Contact.jsx';
 import Preloader from './components/Preloader.jsx';
 import SessionModal from './components/SessionModal.jsx';
 import DashboardLayout from './components/DashboardLayout.jsx';
@@ -134,6 +135,7 @@ function App() {
             <Route path="/terms" element={<TermsAndConditions />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/success-stories" element={<SuccessStories />} />
+            <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>
       )}

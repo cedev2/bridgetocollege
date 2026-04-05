@@ -22,6 +22,7 @@ const Navbar = ({ user, logout }) => {
         { name: 'Services', href: '/#services' },
         { name: 'Success Stories', href: '/success-stories' },
         { name: 'Pricing', href: '/pricing' },
+        { name: 'Contact', href: '/contact' },
     ];
 
     const handleLogout = () => {
