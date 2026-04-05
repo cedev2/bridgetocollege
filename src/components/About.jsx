@@ -128,34 +128,33 @@ const About = () => {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: index * 0.1 }}
-                                    className="bg-white rounded-3xl p-8 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group"
+                                    className="bg-white rounded-3xl p-10 border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all group flex flex-col items-center text-center"
                                 >
-                                    <div className="w-24 h-24 rounded-full overflow-hidden mx-auto mb-6 ring-4 ring-slate-50 group-hover:ring-primary-100 transition-all">
+                                    <div className="w-28 h-28 rounded-full overflow-hidden mb-8 ring-8 ring-slate-50 group-hover:ring-primary-50 transition-all shadow-inner">
                                         <img 
-                                            src={member.image_path || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.full_name)}&background=random`} 
+                                            src={member.image_path ? `http://localhost/brigdetocollege/${member.image_path}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(member.full_name)}&background=random`} 
                                             alt={member.full_name} 
                                             className="w-full h-full object-cover"
                                         />
                                     </div>
-                                    <h3 className="text-xl font-bold text-slate-900 mb-1">{member.full_name}</h3>
-                                    <div className="inline-block px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider mb-4">
+                                    <h3 className="text-2xl font-display font-bold text-slate-900 mb-2">{member.full_name}</h3>
+                                    <div className="inline-block px-4 py-1.5 rounded-full bg-slate-50 text-slate-500 text-[10px] font-bold uppercase tracking-[0.1em] mb-6 border border-slate-100/50">
                                         {member.role}
                                     </div>
-                                    <p className="text-slate-500 text-sm mb-6 line-clamp-3">
+                                    <p className="text-slate-500/80 leading-relaxed text-sm mb-8 max-w-[240px]">
                                         {member.description}
                                     </p>
                                     
                                     {member.phone && (
-                                        <div className="flex items-center justify-center gap-2 text-slate-400 text-sm mb-6">
-                                            <Phone className="w-4 h-4" />
-                                            <span>{member.phone}</span>
+                                        <div className="text-slate-400 text-sm font-medium mb-8">
+                                            {member.phone}
                                         </div>
                                     )}
 
                                     {member.tags && (
-                                        <div className="flex flex-wrap justify-center gap-2">
+                                        <div className="flex flex-wrap justify-center gap-3 mt-auto">
                                             {member.tags.split(',').map((tag, i) => (
-                                                <span key={i} className="px-3 py-1 bg-slate-50 text-slate-500 rounded-lg text-xs font-medium border border-slate-100">
+                                                <span key={i} className="px-3.5 py-1.5 bg-white text-slate-500 rounded-xl text-[10px] font-bold border border-slate-100 shadow-sm uppercase tracking-wider">
                                                     {tag.trim()}
                                                 </span>
                                             ))}

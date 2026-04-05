@@ -12,6 +12,38 @@ import {
     ArrowRight
 } from 'lucide-react';
 
+const CountUp = ({ end, duration = 2000 }) => {
+    const [count, setCount] = useState(0);
+    
+    useEffect(() => {
+        // Parse the number (e.g., "100 +" -> 100, "95%" -> 95, "330K +" -> 330)
+        const match = end.toString().match(/(\d+(\.\d+)?)/);
+        const target = match ? parseFloat(match[1]) : 0;
+        const suffix = end.toString().replace(match ? match[0] : '', '');
+        
+        let startTime = null;
+        const animate = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const currentCount = Math.floor(progress * target);
+            
+            setCount(currentCount);
+            
+            if (progress < 1) {
+                requestAnimationFrame(animate);
+            }
+        };
+        
+        requestAnimationFrame(animate);
+    }, [end, duration]);
+    
+    // Format if it was "330K +" -> the animated part is 330, suffix is "K +"
+    const match = end.toString().match(/(\d+(\.\d+)?)/);
+    const suffix = end.toString().replace(match ? match[0] : '', '');
+    
+    return <span>{count}{suffix}</span>;
+};
+
 const SuccessStories = () => {
     const [stats, setStats] = useState([]);
     const [featured, setFeatured] = useState([]);
@@ -92,7 +124,9 @@ const SuccessStories = () => {
                                 <div className="w-12 h-12 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:bg-primary-600 group-hover:text-white transition-colors">
                                     {getIcon(stat.icon)}
                                 </div>
-                                <h3 className="text-2xl font-bold text-slate-900 mb-1">{stat.value}</h3>
+                                <h3 className="text-2xl font-bold text-slate-900 mb-1">
+                                    <CountUp end={stat.value} />
+                                </h3>
                                 <p className="text-sm font-medium text-slate-500 uppercase tracking-wider">{stat.label}</p>
                             </motion.div>
                         ))}

@@ -6,7 +6,6 @@ import {
     MessageSquare, GraduationCap, Globe
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import Footer from '../components/Footer';
 
 const Pricing = () => {
     const usPackages = [
@@ -300,8 +299,7 @@ const Pricing = () => {
                     </div>
                 </section>
             </div>
-            <Footer />
-        </div>
+            </div>     
     );
 };
 
