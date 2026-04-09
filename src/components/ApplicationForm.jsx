@@ -100,7 +100,7 @@ const ApplicationForm = ({ user }) => {
                             <ul className="space-y-6 text-primary-100/80 text-sm leading-relaxed">
                                 <li className="flex gap-4">
                                     <div className="w-6 h-6 rounded-full bg-primary-800 flex items-center justify-center shrink-0">1</div>
-                                    <p>This form can only be submitted once per account.</p>
+                                    <p>You can submit multiple applications for different programs or years.</p>
                                 </li>
                                 <li className="flex gap-4">
                                     <div className="w-6 h-6 rounded-full bg-primary-800 flex items-center justify-center shrink-0">2</div>

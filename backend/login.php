@@ -9,7 +9,7 @@ if (!$data || empty($data['email']) || empty($data['password'])) {
 }
 
 // Find user
-$stmt = $pdo->prepare('SELECT id, full_name, email, password, role FROM users WHERE email = ?');
+$stmt = $pdo->prepare('SELECT id, full_name, email, password, role, profile_picture, requires_password_change FROM users WHERE email = ?');
 $stmt->execute([$data['email']]);
 $user = $stmt->fetch();
 

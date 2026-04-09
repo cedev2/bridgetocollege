@@ -103,6 +103,20 @@ try {
         $stmt->execute([$idx + 1, $uni]);
     }
 
+    // 4. Partners
+    $partners = [
+        ['name' => 'University of Rwanda', 'category' => 'Rwandan University', 'website_url' => 'https://ur.ac.rw'],
+        ['name' => 'Kigali Parents School', 'category' => 'Rwandan High School', 'website_url' => ''],
+        ['name' => 'Harvard University', 'category' => 'International University', 'website_url' => 'https://harvard.edu'],
+        ['name' => 'Mastercard Foundation', 'category' => 'Scholarship & Funding', 'website_url' => 'https://mastercardfdn.org'],
+        ['name' => 'REB', 'category' => 'Educational Organization', 'website_url' => 'https://reb.rw']
+    ];
+
+    foreach ($partners as $idx => $p) {
+        $stmt = $pdo->prepare("REPLACE INTO partners (id, name, category, website_url) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$idx + 1, $p['name'], $p['category'], $p['website_url']]);
+    }
+
     echo "Full seed completed successfully!";
 } catch (PDOException $e) {
     die("Seed failed: " . $e->getMessage());

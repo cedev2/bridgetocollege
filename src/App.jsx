@@ -11,14 +11,20 @@ import Register from './pages/Register.jsx';
 import UserDashboard from './pages/UserDashboard.jsx';
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import AdminSettings from './pages/AdminSettings.jsx';
+import AdminMessages from './pages/AdminMessages.jsx';
+import AdminReports from './pages/AdminReports.jsx';
+import AdminUsers from './pages/AdminUsers.jsx';
 import PrivacyPolicy from './pages/PrivacyPolicy.jsx';
 import TermsAndConditions from './pages/TermsAndConditions.jsx';
 import Pricing from './pages/Pricing.jsx';
 import SuccessStories from './pages/SuccessStories.jsx';
+import Partners from './pages/Partners.jsx';
 import Contact from './pages/Contact.jsx';
 import Preloader from './components/Preloader.jsx';
 import SessionModal from './components/SessionModal.jsx';
 import DashboardLayout from './components/DashboardLayout.jsx';
+import CookieConsent from './components/CookieConsent.jsx';
+import ForcePasswordChange from './components/ForcePasswordChange.jsx';
 
 // Simple Landing Page Component
 const LandingPage = ({ user }) => (
@@ -91,7 +97,7 @@ function App() {
     setUser(null);
   };
 
-  const isDashboardRoute = ['/dashboard', '/admin-dashboard', '/apply', '/settings'].includes(location.pathname);
+  const isDashboardRoute = ['/dashboard', '/admin-dashboard', '/apply', '/settings', '/admin-messages', '/admin-reports', '/admin-users'].includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -101,6 +107,13 @@ function App() {
         onConfirm={() => { setShowSessionModal(false); window.location.href='/login'; }}
         onLogout={() => setShowSessionModal(false)}
       />
+
+      {user?.requires_password_change && (
+        <ForcePasswordChange 
+            user={user} 
+            onSuccess={(updatedUser) => setUser(updatedUser)} 
+        />
+      )}
       
       {!isDashboardRoute && <Navbar user={user} logout={logout} />}
       
@@ -123,6 +136,18 @@ function App() {
               path="/settings" 
               element={user && user.role === 'admin' ? <AdminSettings user={user} setUser={setUser} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
             />
+            <Route 
+              path="/admin-messages" 
+              element={user && user.role === 'admin' ? <AdminMessages user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
+            />
+            <Route 
+              path="/admin-reports" 
+              element={user && user.role === 'admin' ? <AdminReports user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
+            />
+            <Route 
+              path="/admin-users" 
+              element={user && user.role === 'admin' ? <AdminUsers user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
+            />
           </Routes>
         </DashboardLayout>
       ) : (
@@ -135,12 +160,14 @@ function App() {
             <Route path="/terms" element={<TermsAndConditions />} />
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/success-stories" element={<SuccessStories />} />
+            <Route path="/partners" element={<Partners />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>
         </main>
       )}
 
       {!isDashboardRoute && <Footer />}
+      <CookieConsent />
     </div>
   );
 }

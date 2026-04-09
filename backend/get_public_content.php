@@ -18,11 +18,16 @@ try {
     $stmt = $pdo->query("SELECT * FROM universities ORDER BY name ASC");
     $universities = $stmt->fetchAll();
 
+    // Fetch Partners
+    $stmt = $pdo->query("SELECT * FROM partners ORDER BY name ASC");
+    $partners = $stmt->fetchAll();
+
     json_response([
         'stats' => $stats,
         'featured_testimonials' => $featured_testimonials,
         'testimonials' => $testimonials,
-        'universities' => $universities
+        'universities' => $universities,
+        'partners' => $partners
     ]);
 
 } catch (PDOException $e) {

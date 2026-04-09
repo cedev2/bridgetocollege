@@ -23,6 +23,7 @@ const Contact = () => {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitted, setSubmitted] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,34 +32,54 @@ const Contact = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        setIsSubmitting(false);
-        setSubmitted(true);
-        setFormData({ full_name: '', email: '', phone: '', subject: '', message: '' });
+        setError(null);
+        
+        try {
+            const response = await fetch('http://localhost/brigdetocollege/backend/send_contact.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                setSubmitted(true);
+                setFormData({ full_name: '', email: '', phone: '', subject: '', message: '' });
+            } else {
+                setError(data.error || 'Something went wrong. Please try again.');
+            }
+        } catch (err) {
+            setError('Unable to connect to the server. Please check your connection.');
+            console.error('Submission error:', err);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     const contactInfo = [
         { 
-            icon: <Phone className="w-5 h-5 text-emerald-600" />, 
+            icon: <Phone className="w-5 h-5 text-primary-600" />, 
             label: 'Phone', 
             value: '+250 791 799 081',
             href: 'tel:+250791799081'
         },
         { 
-            icon: <Mail className="w-5 h-5 text-emerald-600" />, 
+            icon: <Mail className="w-5 h-5 text-primary-600" />, 
             label: 'Email', 
             value: 'bridgetocollege.rwanda@gmail.com',
             href: 'mailto:bridgetocollege.rwanda@gmail.com'
         },
         { 
-            icon: <div className="text-emerald-600"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>, 
+            icon: <div className="text-primary-600"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg></div>, 
             label: 'WhatsApp', 
             value: '+250 791 799 081',
             href: 'https://wa.me/250791799081'
         },
         { 
-            icon: <Instagram className="w-5 h-5 text-emerald-600" />, 
+            icon: <Instagram className="w-5 h-5 text-primary-600" />, 
             label: 'Instagram', 
             value: '@bridgetocollege',
             href: 'https://instagram.com/bridgetocollege'
@@ -114,8 +135,14 @@ const Contact = () => {
                         className="lg:col-span-2 bg-white rounded-3xl p-8 lg:p-10 border border-slate-200 shadow-sm"
                     >
                         <h2 className="text-2xl font-bold text-slate-900 mb-8 flex items-center gap-3">
-                            <Send className="w-6 h-6 text-emerald-600" /> Send Us a Message
+                            <Send className="w-6 h-6 text-primary-600" /> Send Us a Message
                         </h2>
+
+                        {error && (
+                            <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm font-medium animate-shake">
+                                {error}
+                            </div>
+                        )}
 
                         {submitted ? (
                             <div className="text-center py-20 animate-fade-in">
@@ -143,7 +170,7 @@ const Contact = () => {
                                             value={formData.full_name}
                                             onChange={handleChange}
                                             placeholder="Enter your full name"
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-600 outline-none transition-all"
+                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary-600 outline-none transition-all"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -155,7 +182,7 @@ const Contact = () => {
                                             value={formData.email}
                                             onChange={handleChange}
                                             placeholder="your.email@example.com"
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-600 outline-none transition-all"
+                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary-600 outline-none transition-all"
                                         />
                                     </div>
                                 </div>
@@ -168,7 +195,7 @@ const Contact = () => {
                                             value={formData.phone}
                                             onChange={handleChange}
                                             placeholder="+250 XXX XXX XXX"
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-600 outline-none transition-all"
+                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary-600 outline-none transition-all"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -178,14 +205,14 @@ const Contact = () => {
                                             required
                                             value={formData.subject}
                                             onChange={handleChange}
-                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-600 outline-none transition-all cursor-pointer"
+                                            className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary-600 outline-none transition-all cursor-pointer"
                                         >
                                             <option value="">Select a subject</option>
-                                            <option value="U.S. University Applications">U.S. University Applications</option>
-                                            <option value="Rwandan University Applications">Rwandan University Applications</option>
-                                            <option value="Scholarship Guidance">Scholarship Guidance</option>
-                                            <option value="Testimonials">Testimonials</option>
-                                            <option value="Other">Other</option>
+                                            <option value="General Inquiry">General Inquiry</option>
+                                            <option value="About Our Services">About Our Services</option>
+                                            <option value="Pricing Questions">Pricing Questions</option>
+                                            <option value="Schedule Consultation">Schedule Consultation</option>
+                                            <option value="Support">Support</option>
                                         </select>
                                     </div>
                                 </div>
@@ -198,13 +225,13 @@ const Contact = () => {
                                         value={formData.message}
                                         onChange={handleChange}
                                         placeholder="Tell us how we can help you..."
-                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-emerald-600 outline-none transition-all resize-none"
+                                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:ring-2 focus:ring-primary-600 outline-none transition-all resize-none"
                                     ></textarea>
                                 </div>
                                 <button 
                                     type="submit" 
                                     disabled={isSubmitting}
-                                    className="w-full py-4 bg-emerald-600 text-white rounded-xl font-bold hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-500/20 disabled:opacity-70 flex items-center justify-center gap-2"
+                                    className="w-full py-4 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 transition-all shadow-lg shadow-primary-500/20 disabled:opacity-70 flex items-center justify-center gap-2"
                                 >
                                     {isSubmitting ? (
                                         <>
@@ -239,12 +266,12 @@ const Contact = () => {
                                         rel="noopener noreferrer"
                                         className="flex items-center gap-4 group"
                                     >
-                                        <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                                        <div className="w-10 h-10 rounded-xl bg-primary-50 flex items-center justify-center group-hover:bg-primary-600 group-hover:text-white transition-all">
                                             {info.icon}
                                         </div>
                                         <div>
                                             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{info.label}</p>
-                                            <p className="text-sm font-bold text-slate-700 group-hover:text-emerald-600 transition-colors">{info.value}</p>
+                                            <p className="text-sm font-bold text-slate-700 group-hover:text-primary-600 transition-colors">{info.value}</p>
                                         </div>
                                     </a>
                                 ))}
@@ -259,7 +286,7 @@ const Contact = () => {
                             className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm"
                         >
                             <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                                <Clock className="w-5 h-5 text-emerald-600" /> Office Hours
+                                <Clock className="w-5 h-5 text-primary-600" /> Office Hours
                             </h3>
                             <div className="space-y-3">
                                 <div className="flex justify-between text-sm">
@@ -290,7 +317,7 @@ const Contact = () => {
                             className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm"
                         >
                             <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
-                                <MapPin className="w-5 h-5 text-emerald-600" /> Location
+                                <MapPin className="w-5 h-5 text-primary-600" /> Location
                             </h3>
                             <div className="space-y-4">
                                 <div>
@@ -304,41 +331,41 @@ const Contact = () => {
                                     href="https://maps.google.com" 
                                     target="_blank" 
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-sm font-bold text-emerald-600 hover:text-emerald-700 transition-colors"
+                                    className="inline-flex items-center gap-2 text-sm font-bold text-primary-600 hover:text-primary-700 transition-colors"
                                 >
                                     View on Google Maps <ArrowRight className="w-4 h-4" />
                                 </a>
                             </div>
                         </motion.div>
 
-                        {/* Quick Actions */}
-                        <div className="bg-emerald-50 rounded-3xl p-6 border border-emerald-100">
-                            <h3 className="text-sm font-black text-emerald-800 uppercase tracking-widest mb-4">Quick Actions</h3>
-                            <div className="space-y-3">
-                                {[
-                                    { name: 'Chat on WhatsApp', href: 'https://wa.me/250791799081' },
-                                    { name: 'Schedule a Call', href: '#' },
-                                    { name: 'Send Quick Email', href: 'mailto:bridgetocollege.rwanda@gmail.com' }
-                                ].map((action, i) => (
-                                    <a 
-                                        key={i}
-                                        href={action.href}
-                                        className="block w-full py-3 px-4 bg-white hover:bg-emerald-600 hover:text-white text-emerald-700 font-bold text-sm rounded-xl border border-emerald-200 transition-all text-center"
-                                    >
-                                        {action.name}
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
+                         {/* Quick Actions */}
+                         <div className="bg-primary-50 rounded-3xl p-6 border border-primary-100">
+                             <h3 className="text-sm font-black text-primary-800 uppercase tracking-widest mb-4">Quick Actions</h3>
+                             <div className="space-y-3">
+                                 {[
+                                     { name: 'Chat on WhatsApp', href: 'https://wa.me/250791799081' },
+                                     { name: 'Schedule a Call', href: '#' },
+                                     { name: 'Send Quick Email', href: 'mailto:bridgetocollege.rwanda@gmail.com' }
+                                 ].map((action, i) => (
+                                     <a 
+                                         key={i}
+                                         href={action.href}
+                                         className="block w-full py-3 px-4 bg-white hover:bg-primary-600 hover:text-white text-primary-700 font-bold text-sm rounded-xl border border-primary-200 transition-all text-center"
+                                     >
+                                         {action.name}
+                                     </a>
+                                 ))}
+                             </div>
+                         </div>
                     </div>
                 </div>
 
                 {/* FAQs */}
                 <section className="mt-32">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl font-display font-bold text-slate-900 mb-4">Frequently Asked Questions</h2>
-                        <div className="w-20 h-1.5 bg-emerald-600 mx-auto rounded-full"></div>
-                    </div>
+                     <div className="text-center mb-16">
+                         <h2 className="text-3xl font-display font-bold text-slate-900 mb-4">Frequently Asked Questions</h2>
+                         <div className="w-20 h-1.5 bg-primary-600 mx-auto rounded-full"></div>
+                     </div>
                     <div className="grid md:grid-cols-2 gap-x-12 gap-y-10">
                         {faqs.map((faq, idx) => (
                             <motion.div 

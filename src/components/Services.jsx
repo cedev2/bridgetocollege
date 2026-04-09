@@ -1,16 +1,36 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
     GraduationCap, Globe, PenTool, MessageSquare, 
     Clipboard, Search, Check,
-    Clock, FileText, Users, Trophy
+    Clock, FileText, Users, Trophy, Building2, ArrowRight
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const Services = () => {
+    const [partners, setPartners] = useState([]);
+
+    useEffect(() => {
+        const fetchPartners = async () => {
+            try {
+                const response = await fetch('http://localhost/brigdetocollege/backend/get_public_content.php');
+                const data = await response.json();
+                if (response.ok) {
+                    setPartners(data.partners || []);
+                }
+            } catch (error) {
+                console.error('Error fetching partners for homepage:', error);
+            }
+        };
+        fetchPartners();
+    }, []);
+
     return (
         <section id="services" className="py-24 bg-slate-50/50">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* ... existing Header, Services Grid, etc ... */}
+                {/* (I'll use multi_replace for better precision if needed, but for now I'll just keep the structure) */}
+                
                 {/* Header */}
                 <div className="text-center mb-20">
                     <motion.h2
@@ -39,9 +59,9 @@ const Services = () => {
                         initial={{ opacity: 0, x: -30 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         viewport={{ once: true }}
-                        className="bg-emerald-50/40 rounded-[2.5rem] p-10 lg:p-12 border border-emerald-100 flex flex-col h-full hover:shadow-xl hover:shadow-emerald-500/5 transition-all"
+                        className="bg-primary-50/40 rounded-[2.5rem] p-10 lg:p-12 border border-primary-100 flex flex-col h-full hover:shadow-xl hover:shadow-primary-500/5 transition-all"
                     >
-                        <div className="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center mb-8 text-emerald-600">
+                        <div className="w-14 h-14 bg-primary-100 rounded-2xl flex items-center justify-center mb-8 text-primary-600">
                             <GraduationCap className="w-8 h-8" />
                         </div>
                         <h3 className="text-2xl font-bold text-slate-900 mb-4">Application to Rwandan Universities</h3>
@@ -56,7 +76,7 @@ const Services = () => {
                                 "Deadline management"
                             ].map((item, i) => (
                                 <li key={i} className="flex items-center gap-3 text-slate-600">
-                                    <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 shrink-0">
+                                    <div className="w-5 h-5 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 shrink-0">
                                         <Check className="w-3 h-3 stroke-[3]" />
                                     </div>
                                     <span className="text-sm font-medium">{item}</span>
@@ -66,7 +86,7 @@ const Services = () => {
 
                         <div className="flex flex-wrap gap-2 mb-8">
                             {["UR", "RP", "UKA", "AU", "and more"].map((tag, i) => (
-                                <span key={i} className="px-3 py-1 bg-white/80 rounded-lg text-xs font-bold text-emerald-700 border border-emerald-100/50">
+                                <span key={i} className="px-3 py-1 bg-white/80 rounded-lg text-xs font-bold text-primary-700 border border-primary-100/50">
                                     {tag}
                                 </span>
                             ))}
@@ -188,7 +208,7 @@ const Services = () => {
                 </div>
 
                 {/* Our Process Section */}
-                <div className="bg-white rounded-[3rem] p-12 lg:p-20 border border-slate-100 shadow-xl shadow-slate-200/20">
+                <div className="bg-white rounded-[3rem] p-12 lg:p-20 border border-slate-100 shadow-xl shadow-slate-200/20 mb-32">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl font-display font-bold text-slate-900">Our Process</h2>
                     </div>
@@ -202,7 +222,7 @@ const Services = () => {
                                 step: "1",
                                 title: "Initial Consultation",
                                 icon: <Clock className="w-5 h-5" />,
-                                bg: "bg-emerald-100 text-emerald-600",
+                                bg: "bg-primary-100 text-primary-600",
                                 desc: "We assess your goals, background, and create a personalized plan."
                             },
                             {
@@ -244,6 +264,53 @@ const Services = () => {
                         ))}
                     </div>
                 </div>
+
+                {/* Partners Logo Section (NEW) */}
+                {partners.length > 0 && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 30 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        className="text-center"
+                    >
+                        <div className="mb-12">
+                            <h2 className="text-2xl font-display font-bold text-slate-900 mb-2">Our Trusted Partners</h2>
+                            <p className="text-slate-500 text-sm font-medium">Collaborating with elite institutions worldwide</p>
+                        </div>
+
+                        {/* Logo Marquee / Grid */}
+                        <div className="relative overflow-hidden group">
+                            <div className="flex flex-wrap items-center justify-center gap-x-12 gap-y-8 px-4 opacity-70 hover:opacity-100 transition-opacity duration-500">
+                                {partners.slice(0, 6).map((partner, idx) => (
+                                    <div key={partner.id} className="flex flex-col items-center gap-3">
+                                        <div className="h-12 w-auto flex items-center justify-center">
+                                            {partner.logo_path ? (
+                                                <img 
+                                                    src={`http://localhost/brigdetocollege/${partner.logo_path}`} 
+                                                    alt={partner.name} 
+                                                    className="h-full w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300 transform hover:scale-110"
+                                                />
+                                            ) : (
+                                                <Building2 className="w-8 h-8 text-slate-300" />
+                                            )}
+                                        </div>
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{partner.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="mt-16">
+                            <Link 
+                                to="/partners" 
+                                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-700 hover:border-primary-500 hover:text-primary-600 hover:shadow-lg transition-all"
+                            >
+                                View All Partners
+                                <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
+                    </motion.div>
+                )}
             </div>
         </section>
     );

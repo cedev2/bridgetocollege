@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { 
-    LayoutDashboard, 
-    Home, 
-    LogOut, 
-    Menu, 
+import {
+    Users,
+    LayoutDashboard,
+    Home,
+    LogOut,
+    Menu,
     X,
     FileText,
     Settings,
     GraduationCap,
-    Globe
+    Globe,
+    MessageSquare,
+    BarChart2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -22,6 +25,9 @@ const DashboardLayout = ({ user, logout, children }) => {
         const links = [
             { name: 'Dashboard', path: user?.role === 'admin' ? '/admin-dashboard' : '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
             ...(user?.role === 'user' ? [{ name: 'My Application', path: '/apply', icon: <FileText className="w-5 h-5" /> }] : []),
+            ...(user?.role === 'admin' ? [{ name: 'Users', path: '/admin-users', icon: <Users className="w-5 h-5" /> }] : []),
+            ...(user?.role === 'admin' ? [{ name: 'Messages', path: '/admin-messages', icon: <MessageSquare className="w-5 h-5" /> }] : []),
+            ...(user?.role === 'admin' ? [{ name: 'Reports', path: '/admin-reports', icon: <BarChart2 className="w-5 h-5" /> }] : []),
             ...(user?.role === 'admin' ? [{ name: 'Settings', path: '/settings', icon: <Settings className="w-5 h-5" /> }] : []),
             { name: 'Common App', path: 'https://www.commonapp.org/', icon: <Globe className="w-5 h-5" />, isExternal: true },
             { name: 'Back to Website', path: '/', icon: <Home className="w-5 h-5" /> }
@@ -39,7 +45,7 @@ const DashboardLayout = ({ user, logout, children }) => {
             {/* Mobile Sidebar Overlay */}
             <AnimatePresence>
                 {sidebarOpen && (
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -51,9 +57,8 @@ const DashboardLayout = ({ user, logout, children }) => {
 
             {/* Sidebar */}
             <aside
-                className={`fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 text-white flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 overflow-y-auto ${
-                    sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                }`}
+                className={`fixed inset-y-0 left-0 z-50 w-72 bg-slate-900 text-white flex flex-col transition-transform duration-300 lg:static lg:translate-x-0 overflow-y-auto ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+                    }`}
             >
                 <div className="p-6 flex items-center justify-between border-b border-white/10">
                     <Link to="/" className="flex items-center gap-3">
@@ -90,11 +95,10 @@ const DashboardLayout = ({ user, logout, children }) => {
                     <div className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4 px-2">Menu</div>
                     {getNavLinks().map((link) => {
                         const isActive = location.pathname === link.path && !link.isExternal;
-                        const commonClasses = `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
-                            isActive 
-                                ? 'bg-primary-600/20 text-primary-400 border border-primary-500/20' 
+                        const commonClasses = `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${isActive
+                                ? 'bg-primary-600/20 text-primary-400 border border-primary-500/20'
                                 : 'text-slate-400 hover:bg-white/5 hover:text-white'
-                        }`;
+                            }`;
 
                         if (link.isExternal) {
                             return (
@@ -127,7 +131,7 @@ const DashboardLayout = ({ user, logout, children }) => {
                 </nav>
 
                 <div className="p-4 border-t border-white/10 mt-auto">
-                    <button 
+                    <button
                         onClick={handleLogout}
                         className="flex items-center gap-3 w-full px-4 py-3 rounded-xl font-medium text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all border border-transparent hover:border-rose-500/20"
                     >
@@ -140,16 +144,19 @@ const DashboardLayout = ({ user, logout, children }) => {
             {/* Main Content */}
             <main className="flex-1 flex flex-col min-w-0 overflow-hidden">
                 {/* Mobile Header */}
-                <header className="lg:hidden bg-white border-b border-slate-200 p-4 flex items-center justify-between z-30">
-                    <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg overflow-hidden border border-slate-100">
+                <header className="lg:hidden bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between z-30 sticky top-0">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl overflow-hidden border border-slate-100 shadow-sm">
                             <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
                         </div>
-                        <span className="font-bold text-slate-900">Portal</span>
+                        <div>
+                            <span className="block text-lg font-display font-bold text-slate-900 leading-tight">BridgeToCollege</span>
+                            <span className="block text-[10px] text-primary-600 font-bold uppercase tracking-wider">Admin Portal</span>
+                        </div>
                     </div>
-                    <button 
+                    <button
                         onClick={() => setSidebarOpen(true)}
-                        className="p-2 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        className="p-2.5 rounded-2xl bg-slate-50 text-slate-600 hover:bg-slate-100 border border-slate-200 transition-all pointer-events-auto"
                     >
                         <Menu className="w-6 h-6" />
                     </button>

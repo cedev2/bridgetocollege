@@ -35,22 +35,22 @@ const Footer = () => {
                     <div>
                         <h4 className="text-lg font-bold mb-6">Quick Links</h4>
                         <ul className="space-y-4 text-primary-200/70">
-                            <li><a href="#about" className="hover:text-accent-400 transition-colors">About Us</a></li>
-                            <li><a href="#services" className="hover:text-accent-400 transition-colors">Our Services</a></li>
-                            <li><a href="#partners" className="hover:text-accent-400 transition-colors">Our Partners</a></li>
-                            <li><a href="#pricing" className="hover:text-accent-400 transition-colors">Pricing</a></li>
-                            <li><a href="#testimonials" className="hover:text-accent-400 transition-colors">Testimonials</a></li>
+                            <li><a href="/#about" className="hover:text-accent-400 transition-colors">About Us</a></li>
+                            <li><a href="/#services" className="hover:text-accent-400 transition-colors">Our Services</a></li>
+                            <li><Link to="/partners" className="hover:text-accent-400 transition-colors">Our Partners</Link></li>
+                            <li><Link to="/pricing" className="hover:text-accent-400 transition-colors">Pricing</Link></li>
+                            <li><Link to="/success-stories" className="hover:text-accent-400 transition-colors">Testimonials</Link></li>
                         </ul>
                     </div>
 
                     <div>
                         <h4 className="text-lg font-bold mb-6">Services</h4>
                         <ul className="space-y-4 text-primary-200/70">
-                            <li><a href="#services" className="hover:text-accent-400 transition-colors text-sm">Rwandan University applications</a></li>
-                            <li><a href="#services" className="hover:text-accent-400 transition-colors text-sm">U.S-based University Applications</a></li>
-                            <li><a href="#services" className="hover:text-accent-400 transition-colors text-sm">Essay Writing Support</a></li>
-                            <li><a href="#services" className="hover:text-accent-400 transition-colors text-sm">Interview Preparation</a></li>
-                            <li><a href="#services" className="hover:text-accent-400 transition-colors text-sm">Scholarship Search</a></li>
+                            <li><a href="/#services" className="hover:text-accent-400 transition-colors text-sm">Rwandan University applications</a></li>
+                            <li><a href="/#services" className="hover:text-accent-400 transition-colors text-sm">U.S-based University Applications</a></li>
+                            <li><a href="/#services" className="hover:text-accent-400 transition-colors text-sm">Essay Writing Support</a></li>
+                            <li><a href="/#services" className="hover:text-accent-400 transition-colors text-sm">Interview Preparation</a></li>
+                            <li><a href="/#services" className="hover:text-accent-400 transition-colors text-sm">Scholarship Search</a></li>
                         </ul>
                     </div>
 
@@ -76,7 +76,7 @@ const Footer = () => {
                 </div>
 
                 <div className="pt-10 border-t border-primary-900 flex flex-col md:flex-row justify-between items-center gap-4 text-primary-400 text-xs">
-                    <p>© 2024 Bridge to College. All rights reserved.</p>
+                    <p>© 2026 Bridge to College. All rights reserved.</p>
                     <div className="flex gap-6">
                         <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
                         <Link to="/terms" className="hover:text-white transition-colors">Terms and Conditions</Link>

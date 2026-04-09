@@ -4,13 +4,13 @@ require_once 'db.php';
 $auth = check_auth();
 $userId = $auth['id'];
 
-$stmt = $pdo->prepare('SELECT id, status, created_at FROM submissions WHERE user_id = ?');
+$stmt = $pdo->prepare('SELECT id, status, created_at FROM submissions WHERE user_id = ? ORDER BY created_at DESC');
 $stmt->execute([$userId]);
-$submission = $stmt->fetch();
+$submissions = $stmt->fetchAll();
 
-if ($submission) {
-    json_response(['submission' => $submission]);
+if (count($submissions) > 0) {
+    json_response(['submissions' => $submissions]);
 } else {
-    json_response(['message' => 'No submission found', 'status' => 'None']);
+    json_response(['message' => 'No submission found', 'status' => 'None', 'submissions' => []]);
 }
 ?>

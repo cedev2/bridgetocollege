@@ -6,12 +6,7 @@ $userId = $auth['id'];
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Check for existing submission
-$stmt = $pdo->prepare('SELECT id FROM submissions WHERE user_id = ?');
-$stmt->execute([$userId]);
-if ($stmt->fetch()) {
-    json_response(['error' => 'You have already submitted an application.'], 403);
-}
+// Single submission restriction removed by Admin request
 
 $columns = [
     'user_id', 'full_name', 'email', 'phone', 'contact_method', 

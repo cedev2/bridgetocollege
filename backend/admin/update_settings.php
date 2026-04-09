@@ -38,7 +38,7 @@ try {
         }
 
         // Validate File Size (max 5MB)
-        if ($_FILES['profile_picture']['size'] > 5 * 1024 * 1024) {
+        if ($_FILES['profile_picture']['size'] > 7 * 1024 * 1024) {
             http_response_code(400);
             echo json_encode(['error' => 'File size exceeds 5MB limit.']);
             exit;

@@ -20,7 +20,7 @@ if (!$id || !$status) {
 try {
     $stmt = $pdo->prepare('UPDATE submissions SET status = ? WHERE id = ?');
     $stmt->execute([$status, $id]);
-    json_response(['message' => 'Status updated successfully!']);
+    json_response(['success' => true, 'message' => 'Status updated successfully!']);
 } catch (Exception $e) {
     json_response(['error' => 'Update failed: ' . $e->getMessage()], 500);
 }

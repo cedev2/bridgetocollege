@@ -6,6 +6,7 @@ import { motion } from 'framer-motion';
 const Register = () => {
     const [formData, setFormData] = useState({ full_name: '', email: '', password: '' });
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -24,7 +25,10 @@ const Register = () => {
             const data = await response.json();
 
             if (response.ok) {
-                navigate('/login');
+                setSuccess(true);
+                setTimeout(() => {
+                    navigate('/login?registered=true');
+                }, 2000);
             } else {
                 setError(data.error || 'Registration failed');
             }
@@ -57,6 +61,13 @@ const Register = () => {
                     </div>
                 )}
 
+                {success && (
+                    <div className="mb-6 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl flex items-center gap-3 text-emerald-600 text-sm">
+                        <div className="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-white text-[10px] shrink-0">✓</div>
+                        Registration successful! Redirecting to login...
+                    </div>
+                )}
+
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="space-y-2">
                         <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
@@ -66,7 +77,7 @@ const Register = () => {
                             type="text"
                             required
                             className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none transition-all"
-                            placeholder="John Doe"
+                            placeholder="Full name"
                             value={formData.full_name}
                             onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                         />

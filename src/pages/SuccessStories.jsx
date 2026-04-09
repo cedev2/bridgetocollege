@@ -148,9 +148,9 @@ const SuccessStories = () => {
                                 key={idx}
                                 initial={{ opacity: 0, x: idx % 2 === 0 ? -20 : 20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
-                                className="bg-emerald-50/50 rounded-3xl p-8 border border-emerald-100 flex flex-col md:flex-row gap-8 items-start hover:shadow-xl hover:shadow-emerald-500/5 transition-all"
+                                className="bg-primary-50/50 rounded-3xl p-8 border border-primary-100 flex flex-col md:flex-row gap-8 items-start hover:shadow-xl hover:shadow-primary-500/5 transition-all"
                             >
-                                <div className="shrink-0 w-24 h-24 rounded-full bg-emerald-200 flex items-center justify-center font-bold text-emerald-700 text-2xl overflow-hidden shadow-lg border-4 border-white">
+                                <div className="shrink-0 w-24 h-24 rounded-full bg-primary-200 flex items-center justify-center font-bold text-primary-700 text-2xl overflow-hidden shadow-lg border-4 border-white">
                                     {story.image_path ? (
                                         <img src={story.image_path} alt={story.name} className="w-full h-full object-cover" />
                                     ) : story.name.charAt(0)}
@@ -159,20 +159,20 @@ const SuccessStories = () => {
                                     <div className="flex justify-between items-start mb-4">
                                         <div>
                                             <h3 className="text-xl font-bold text-slate-900 mb-1">{story.name}</h3>
-                                            <p className="text-sm font-medium text-emerald-600 flex items-center gap-1">
+                                            <p className="text-sm font-medium text-primary-600 flex items-center gap-1">
                                                 <MapPin className="w-3.5 h-3.5" /> {story.location}
                                             </p>
                                         </div>
-                                        <Quote className="w-10 h-10 text-emerald-200" />
+                                        <Quote className="w-10 h-10 text-primary-200" />
                                     </div>
                                     <p className="text-slate-700 leading-relaxed italic mb-6">
                                         "{story.content}"
                                     </p>
                                     <div className="flex items-center justify-between">
-                                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-full">
+                                        <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-600 text-white text-xs font-bold rounded-full">
                                             {story.university}
                                         </div>
-                                        <span className="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-lg">Full Scholarship</span>
+                                        <span className="text-xs font-bold text-primary-700 bg-primary-100 px-3 py-1 rounded-lg">Full Scholarship</span>
                                     </div>
                                 </div>
                             </motion.div>
