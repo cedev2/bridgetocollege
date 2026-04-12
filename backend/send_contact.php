@@ -29,6 +29,9 @@ try {
     // 1. Save to Database
     $stmt = $pdo->prepare("INSERT INTO contact_messages (full_name, email, phone, subject, message) VALUES (?, ?, ?, ?, ?)");
     $stmt->execute([$full_name, $email, $phone, $subject, $message]);
+    
+    // Log the contact submission
+    log_action(null, 'Contact Message', "New message from $full_name ($email) regarding $subject");
 
     // 2. Prepare Email
     $to = "bridgetocollege.rwanda@gmail.com";
