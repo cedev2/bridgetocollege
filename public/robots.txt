@@ -1,0 +1,13 @@
+# robots.txt for Bridge to College
+User-agent: *
+Allow: /
+Disallow: /dashboard/
+Disallow: /admin-dashboard/
+Disallow: /apply/
+Disallow: /settings/
+Disallow: /admin-messages/
+Disallow: /admin-reports/
+Disallow: /admin-users/
+
+# Sitemap location
+Sitemap: https://bridgetocollege.com/sitemap.xml

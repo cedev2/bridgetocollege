@@ -3,6 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, LogIn, AlertCircle, Key, ArrowRight, ShieldCheck, ArrowLeft, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { apiFetch } from '../utils/api';
+import SEO from '../components/SEO.jsx';
 
 const Login = ({ onLogin }) => {
     // view can be: 'login' | 'forgot_request' | 'forgot_reset' | 'forgot_success'
@@ -133,6 +134,11 @@ const Login = ({ onLogin }) => {
         <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center relative bg-slate-50 overflow-hidden">
             {/* Background Decoration */}
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-500/10 rounded-full blur-[100px] pointer-events-none" />
+
+            <SEO 
+                title={view === 'login' ? 'Login' : 'Reset Your Password'} 
+                description="Securely access your Bridge to College account to manage your university applications, track your progress, and receive expert guidance." 
+            />
 
             <div className="w-full max-w-md relative z-10">
                 <AnimatePresence mode="wait">

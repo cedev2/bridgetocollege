@@ -12,6 +12,7 @@ import {
     ArrowRight
 } from 'lucide-react';
 import { apiFetch, getImageUrl } from '../utils/api';
+import SEO from '../components/SEO.jsx';
 
 const CountUp = ({ end, duration = 2000 }) => {
     const [count, setCount] = useState(0);
@@ -93,6 +94,11 @@ const SuccessStories = () => {
 
     return (
         <div className="bg-white">
+            <SEO 
+                title="Student Success Stories & Testimonials" 
+                description="Read inspiring stories from Rwandan students who secured full scholarships and admission to top universities worldwide with the help of Bridge to College." 
+                keywords="Student Testimonials, Scholarship Success Rwanda, University Admission Stories, Bridge to College Results"
+            />
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 overflow-hidden bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">

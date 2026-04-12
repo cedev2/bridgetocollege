@@ -27,10 +27,16 @@ import CookieConsent from './components/CookieConsent.jsx';
 import UserSettings from './pages/UserSettings.jsx';
 import PasswordAdvisory from './components/PasswordAdvisory.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
+import SEO from './components/SEO.jsx';
 
 // Simple Landing Page Component
 const LandingPage = ({ user }) => (
   <>
+    <SEO 
+        title="Your Path to Higher Education" 
+        description="Bridge to College empowers Rwandan students to achieve their higher education dreams through personalized guidance, scholarship support, and expert university application assistance." 
+        keywords="Education Rwanda, University Application Rwanda, Scholarships Rwanda, Bridge to College, Higher Education Rwanda"
+    />
     <Hero user={user} />
     <About />
     <Services />

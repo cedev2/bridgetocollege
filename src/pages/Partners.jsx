@@ -10,6 +10,7 @@ import {
     Loader2
 } from 'lucide-react';
 import { apiFetch, getImageUrl } from '../utils/api';
+import SEO from '../components/SEO.jsx';
 
 const Partners = () => {
     const [partners, setPartners] = useState([]);
@@ -66,6 +67,11 @@ const Partners = () => {
 
     return (
         <div className="bg-white">
+            <SEO 
+                title="Our Global Network & Partners" 
+                description="Explore our extensive network of partner universities and educational organizations in Rwanda and worldwide. We collaborate with leading institutions to provide students with premier scholarship and higher education opportunities." 
+                keywords="University Partners Rwanda, International Education Network, Scholarship Providers, Rwandan High Schools"
+            />
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 overflow-hidden bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
