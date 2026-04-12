@@ -8,14 +8,22 @@ if (!$data || empty($data['email'])) {
 }
 
 try {
-    // 1. Verify user exists
-    $stmt = $pdo->prepare('SELECT id, full_name FROM users WHERE email = ?');
+    // 1. Verify user exists — fetch role too for security check
+    $stmt = $pdo->prepare('SELECT id, full_name, role FROM users WHERE email = ?');
     $stmt->execute([$data['email']]);
     $user = $stmt->fetch();
 
     if (!$user) {
         // Log the search attempt for debugging
         file_put_contents('mail_log.txt', date('[Y-m-d H:i:s] ') . "ATTEMPT: Reset requested for UNKNOWN email: " . $data['email'] . "\n", FILE_APPEND);
+        json_response(['success' => true, 'message' => 'If your email is registered, a reset code has been sent.']);
+    }
+
+    // 2. SECURITY: Block admin accounts from using the public reset form
+    // Admins must reset passwords via PHPMyAdmin or the internal admin panel only.
+    if ($user['role'] === 'admin') {
+        file_put_contents('mail_log.txt', date('[Y-m-d H:i:s] ') . "BLOCKED: Admin password reset attempt for: " . $data['email'] . "\n", FILE_APPEND);
+        // Return generic message to avoid exposing that this is an admin account
         json_response(['success' => true, 'message' => 'If your email is registered, a reset code has been sent.']);
     }
 
