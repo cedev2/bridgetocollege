@@ -67,8 +67,8 @@ const DashboardLayout = ({ user, logout, children }) => {
                             <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
                         </div>
                         <div>
-                            <span className="block text-xl font-display font-bold tracking-tight leading-none">Bridge<span className="text-primary-400">to</span>College</span>
-                            <span className="text-xs text-slate-400 font-medium">Portal Area</span>
+                            <span className="block text-xl font-display font-bold tracking-tight leading-none">Bridge<span className="text-primary-400"> to </span>College</span>
+                            <span className="text-xs text-slate-400 font-medium">{user?.role === 'admin' ? 'Management Area' : 'Student Scholar'}</span>
                         </div>
                     </Link>
                     <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-slate-400 hover:text-white">
@@ -153,8 +153,10 @@ const DashboardLayout = ({ user, logout, children }) => {
                             <img src="/logo.jpg" alt="Logo" className="w-full h-full object-cover" />
                         </div>
                         <div>
-                            <span className="block text-lg font-display font-bold text-slate-900 leading-tight">BridgeToCollege</span>
-                            <span className="block text-[10px] text-primary-600 font-bold uppercase tracking-wider">Admin Portal</span>
+                            <span className="block text-lg font-display font-bold text-slate-900 leading-tight">Bridge to College</span>
+                            <span className="block text-[10px] text-primary-600 font-bold uppercase tracking-wider">
+                                {user?.role === 'admin' ? 'Management Console' : 'Scholar Portal'}
+                            </span>
                         </div>
                     </div>
                     <button

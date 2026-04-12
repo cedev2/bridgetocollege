@@ -20,7 +20,7 @@ const Footer = () => {
                             Empowering students to achieve their higher education dreams through personalized guidance and expert support.
                         </p>
                         <div className="flex gap-4">
-                            <a href="https://www.instagram.com/bridge_to_college" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-primary-900 flex items-center justify-center hover:bg-primary-800 transition-colors">
+                            <a href="https://www.instagram.com/bridge_to_college/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-primary-900 flex items-center justify-center hover:bg-primary-800 transition-colors">
                                 <Instagram className="w-5 h-5" />
                             </a>
                             <a href="mailto:bridgetocollege.rwanda@gmail.com" className="w-10 h-10 rounded-full bg-primary-900 flex items-center justify-center hover:bg-primary-800 transition-colors">

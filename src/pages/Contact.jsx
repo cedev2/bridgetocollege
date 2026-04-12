@@ -82,8 +82,8 @@ const Contact = () => {
         { 
             icon: <Instagram className="w-5 h-5 text-primary-600" />, 
             label: 'Instagram', 
-            value: '@bridgetocollege',
-            href: 'https://instagram.com/bridgetocollege'
+            value: '@bridge_to_college',
+            href: 'https://www.instagram.com/bridge_to_college/'
         }
     ];
 

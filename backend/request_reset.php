@@ -14,7 +14,8 @@ try {
     $user = $stmt->fetch();
 
     if (!$user) {
-        // We pretend it worked to prevent email enumeration attacks
+        // Log the search attempt for debugging
+        file_put_contents('mail_log.txt', date('[Y-m-d H:i:s] ') . "ATTEMPT: Reset requested for UNKNOWN email: " . $data['email'] . "\n", FILE_APPEND);
         json_response(['success' => true, 'message' => 'If your email is registered, a reset code has been sent.']);
     }
 

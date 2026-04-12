@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Hero from './components/Hero.jsx';
@@ -28,6 +28,7 @@ import UserSettings from './pages/UserSettings.jsx';
 import PasswordAdvisory from './components/PasswordAdvisory.jsx';
 import ErrorBoundary from './components/ErrorBoundary.jsx';
 import SEO from './components/SEO.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 // Simple Landing Page Component
 const LandingPage = ({ user }) => (
@@ -94,21 +95,22 @@ function App() {
     };
   }, [user]);
 
-  const login = (userData) => {
+  const login = useCallback((userData) => {
     // Save user data (including token) to localStorage
     localStorage.setItem('btc_user', JSON.stringify(userData));
     setUser(userData);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('btc_user');
     setUser(null);
-  };
+  }, []);
 
   const isDashboardRoute = ['/dashboard', '/admin-dashboard', '/apply', '/settings', '/admin-messages', '/admin-reports', '/admin-users'].includes(location.pathname);
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
+      <ScrollToTop />
       <Preloader isLoading={loading} />
       <SessionModal 
         isOpen={showSessionModal} 
