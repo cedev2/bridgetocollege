@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { User, Mail, Lock, UserPlus, AlertCircle } from 'lucide-react';
+import { User, Mail, Lock, UserPlus, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { apiFetch } from '../utils/api';
 
 const Register = () => {
     const [formData, setFormData] = useState({ full_name: '', email: '', password: '' });
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -16,7 +18,7 @@ const Register = () => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/register.php', {
+            const response = await apiFetch('register.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -101,14 +103,23 @@ const Register = () => {
                         <label className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                             <Lock className="w-4 h-4 text-primary-600" /> Password
                         </label>
-                        <input
-                            type="password"
-                            required
-                            className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none transition-all"
-                            placeholder="••••••••"
-                            value={formData.password}
-                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                required
+                                className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none transition-all pr-12"
+                                placeholder="••••••••"
+                                value={formData.password}
+                                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                            >
+                                {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                            </button>
+                        </div>
                     </div>
 
                     <button

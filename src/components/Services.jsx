@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { 
-    GraduationCap, Globe, PenTool, MessageSquare, 
+    GraduationCap, Globe, Pen, MessageSquare, 
     Clipboard, Search, Check,
-    Clock, FileText, Users, Trophy, Building2, ArrowRight
+    Clock, FileText, Users, Trophy, Building2, ArrowRight, AlertCircle
 } from 'lucide-react';
+import { apiFetch, getImageUrl } from '../utils/api';
 import { Link } from 'react-router-dom';
 
 const Services = () => {
     const [partners, setPartners] = useState([]);
 
     useEffect(() => {
-        const fetchPartners = async () => {
+        const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost/brigdetocollege/backend/get_public_content.php');
+                const response = await apiFetch('get_public_content.php');
                 const data = await response.json();
                 if (response.ok) {
                     setPartners(data.partners || []);
                 }
             } catch (error) {
-                console.error('Error fetching partners for homepage:', error);
             }
         };
-        fetchPartners();
+        fetchData();
     }, []);
 
     return (
@@ -151,7 +151,7 @@ const Services = () => {
                     {[
                         {
                             title: "Essay Support",
-                            icon: <PenTool className="w-6 h-6" />,
+                            icon: <Pen className="w-6 h-6" />,
                             color: "text-amber-600",
                             bg: "bg-amber-50",
                             desc: "Craft compelling personal statements and supplemental essays that showcase your unique story.",
@@ -286,7 +286,7 @@ const Services = () => {
                                         <div className="h-12 w-auto flex items-center justify-center">
                                             {partner.logo_path ? (
                                                 <img 
-                                                    src={`http://localhost/brigdetocollege/${partner.logo_path}`} 
+                                                    src={getImageUrl(partner.logo_path)} 
                                                     alt={partner.name} 
                                                     className="h-full w-auto object-contain grayscale hover:grayscale-0 transition-all duration-300 transform hover:scale-110"
                                                 />

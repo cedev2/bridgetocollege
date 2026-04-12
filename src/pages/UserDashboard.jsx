@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Clock, XCircle, FileText, Send, User } from 'lucide-react';
+import { apiFetch, getImageUrl } from '../utils/api';
 
 const UserDashboard = ({ user }) => {
     const [submissions, setSubmissions] = useState([]);
@@ -10,9 +11,7 @@ const UserDashboard = ({ user }) => {
     useEffect(() => {
         const fetchStatus = async () => {
             try {
-                const response = await fetch(`http://localhost/brigdetocollege/backend/get_status.php`, {
-                    headers: { 'Authorization': `Bearer ${user.token}` }
-                });
+                const response = await apiFetch(`get_status.php`);
                 const data = await response.json();
                 if (response.ok) {
                     setSubmissions(data.submissions || []);
@@ -164,7 +163,7 @@ const UserDashboard = ({ user }) => {
                             <div className="w-24 h-24 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-50 mb-4 bg-slate-100 flex items-center justify-center">
                                 {user?.profile_picture ? (
                                     <img 
-                                        src={user.profile_picture.startsWith('http') ? user.profile_picture : `http://localhost/brigdetocollege/backend/${user.profile_picture}`} 
+                                        src={getImageUrl(user.profile_picture)} 
                                         className="w-full h-full object-cover" 
                                     />
                                 ) : (

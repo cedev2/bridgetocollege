@@ -23,15 +23,6 @@ if ($user && password_verify($data['password'], $user['password'])) {
         'role' => $user['role']
     ]);
 
-    // If Admin, set PHP Session for the dashboard
-    if ($user['role'] === 'admin') {
-        ini_set('session.gc_maxlifetime', 30 * 24 * 60 * 60);
-        session_set_cookie_params(30 * 24 * 60 * 60);
-        session_start();
-        $_SESSION['admin_logged_in'] = true;
-        $_SESSION['user_id'] = $user['id'];
-    }
-
     json_response([
         'message' => 'Login successful', 
         'user' => $user,

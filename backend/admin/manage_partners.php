@@ -44,7 +44,7 @@ switch ($method) {
             $target_file = $target_dir . $file_name;
 
             if (move_uploaded_file($_FILES['logo']['tmp_name'], $target_file)) {
-                $logo_path = "backend/uploads/partners/" . $file_name;
+                $logo_path = "uploads/partners/" . $file_name;
             }
         }
 

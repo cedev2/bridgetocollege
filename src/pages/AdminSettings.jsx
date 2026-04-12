@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
     User, Mail, Lock, Save, Loader2, CheckCircle2, 
     Plus, Users, Phone, Tag, Type, Edit2, Trash2, 
-    Star, GraduationCap, Quote, X, Camera, Upload, Globe, ExternalLink, Building2
+    Star, GraduationCap, Quote, X, Camera, Upload, Globe, ExternalLink, Building2, LayoutDashboard, Info,
+    Eye, EyeOff
 } from 'lucide-react';
+import { apiFetch, getImageUrl } from '../utils/api';
 
 const AdminSettings = ({ user, setUser }) => {
     const [activeTab, setActiveTab] = useState('account');
@@ -19,11 +21,9 @@ const AdminSettings = ({ user, setUser }) => {
         confirm_password: ''
     });
     const [profilePic, setProfilePic] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState(() => {
-        if (!user?.profile_picture) return null;
-        if (user.profile_picture.startsWith('http') || user.profile_picture.startsWith('blob:')) return user.profile_picture;
-        return `http://localhost/brigdetocollege/backend/${user.profile_picture}`;
-    });
+    const [previewUrl, setPreviewUrl] = useState(() => getImageUrl(user?.profile_picture));
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const fileInputRef = useRef(null);
 
     // --- TESTIMONIAL STATE ---
@@ -39,6 +39,7 @@ const AdminSettings = ({ user, setUser }) => {
     const [isUniModalOpen, setIsUniModalOpen] = useState(false);
     const [editingUni, setEditingUni] = useState(null);
     const [uniForm, setUniForm] = useState({ name: '', logo_path: '' });
+    const [uniLogoFile, setUniLogoFile] = useState(null);
 
     // --- TEAM STATE ---
     const [staff, setStaff] = useState([]);
@@ -74,20 +75,32 @@ const AdminSettings = ({ user, setUser }) => {
     const fetchAllTestimonials = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/manage_testimonials.php', {
-                headers: { 'Authorization': `Bearer ${user.token}` }
-            });
+            const response = await apiFetch('admin/manage_testimonials.php');
             const data = await response.json();
-            if (response.ok) setTestimonials(data.testimonials);
+            if (response.ok) setTestimonials(data.testimonials || []);
+
+            const responseUni = await apiFetch('admin/manage_universities.php');
+            const dataUni = await responseUni.json();
+            if (responseUni.ok) setUniversities(dataUni.universities || []);
+
+            const responseStaff = await apiFetch('admin/manage_staff.php');
+            const dataStaff = await responseStaff.json();
+            if (responseStaff.ok) setStaff(dataStaff.staff || []);
+
+            const responseStats = await apiFetch('admin/manage_stats.php');
+            const dataStats = await responseStats.json();
+            if (responseStats.ok) setStats(dataStats.stats || {});
+
+            const responsePartners = await apiFetch('admin/manage_partners.php');
+            const dataPartners = await responsePartners.json();
+            if (responsePartners.ok) setPartners(dataPartners.partners || []);
         } finally { setLoading(false); }
     };
 
     const fetchAllUniversities = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/manage_universities.php', {
-                headers: { 'Authorization': `Bearer ${user.token}` }
-            });
+            const response = await apiFetch('admin/manage_universities.php');
             const data = await response.json();
             if (response.ok) setUniversities(data.universities);
         } finally { setLoading(false); }
@@ -96,9 +109,7 @@ const AdminSettings = ({ user, setUser }) => {
     const fetchAllStaff = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/manage_staff.php', {
-                headers: { 'Authorization': `Bearer ${user.token}` }
-            });
+            const response = await apiFetch('admin/manage_staff.php');
             const data = await response.json();
             if (response.ok) setStaff(data.staff);
         } finally { setLoading(false); }
@@ -107,9 +118,7 @@ const AdminSettings = ({ user, setUser }) => {
     const fetchAllStats = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/manage_stats.php', {
-                headers: { 'Authorization': `Bearer ${user.token}` }
-            });
+            const response = await apiFetch('admin/manage_stats.php');
             const data = await response.json();
             if (response.ok) setStats(data.stats);
         } finally { setLoading(false); }
@@ -118,9 +127,7 @@ const AdminSettings = ({ user, setUser }) => {
     const fetchAllPartners = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/manage_partners.php', {
-                headers: { 'Authorization': `Bearer ${user.token}` }
-            });
+            const response = await apiFetch('admin/manage_partners.php');
             const data = await response.json();
             if (response.ok) setPartners(data.partners);
         } finally { setLoading(false); }
@@ -141,9 +148,8 @@ const AdminSettings = ({ user, setUser }) => {
             if (formData.password) submitData.append('password', formData.password);
             if (profilePic) submitData.append('profile_picture', profilePic);
 
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/update_settings.php', {
+            const response = await apiFetch('update_profile.php', {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${user.token}` },
                 body: submitData
             });
             const data = await response.json();
@@ -160,12 +166,9 @@ const AdminSettings = ({ user, setUser }) => {
     const handleSaveTestimonial = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/manage_testimonials.php', {
+            const response = await apiFetch('admin/manage_testimonials.php', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(editingTestimonial ? { ...testimonialForm, id: editingTestimonial.id } : testimonialForm)
             });
             if (response.ok) {
@@ -178,13 +181,10 @@ const AdminSettings = ({ user, setUser }) => {
     const handleDeleteTestimonial = async (id) => {
         if (!confirm('Are you sure?')) return;
         try {
-            await fetch('http://localhost/brigdetocollege/backend/admin/manage_testimonials.php', {
-                method: 'DELETE',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
-                body: JSON.stringify({ id })
+            await apiFetch('admin/manage_testimonials.php', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'delete', id }),
+                headers: { 'Content-Type': 'application/json' }
             });
             fetchAllTestimonials();
         } catch (err) { alert('Error deleting'); }
@@ -193,32 +193,32 @@ const AdminSettings = ({ user, setUser }) => {
     // --- UNIVERSITY ACTIONS ---
     const handleSaveUni = async (e) => {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append('name', uniForm.name);
+        if (editingUni) formData.append('id', editingUni.id);
+        if (uniLogoFile) formData.append('logo', uniLogoFile);
+        else formData.append('logo_path', uniForm.logo_path);
+
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/manage_universities.php', {
+            const response = await apiFetch('admin/manage_universities.php', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
-                body: JSON.stringify(editingUni ? { ...uniForm, id: editingUni.id } : uniForm)
+                body: formData
             });
             if (response.ok) {
                 setIsUniModalOpen(false);
+                setUniLogoFile(null);
                 fetchAllUniversities();
             }
-        } catch (err) { alert('Error saving'); }
+        } catch (err) { alert('Error saving university'); }
     };
 
     const handleDeleteUni = async (id) => {
         if (!confirm('Are you sure?')) return;
         try {
-            await fetch('http://localhost/brigdetocollege/backend/admin/manage_universities.php', {
-                method: 'DELETE',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
-                body: JSON.stringify({ id })
+            await apiFetch('admin/manage_universities.php', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'delete', id }),
+                headers: { 'Content-Type': 'application/json' }
             });
             fetchAllUniversities();
         } catch (err) { alert('Error deleting'); }
@@ -235,9 +235,8 @@ const AdminSettings = ({ user, setUser }) => {
         if (photoFile) formData.append('photo', photoFile);
 
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/manage_staff.php', {
+            const response = await apiFetch('admin/manage_staff.php', {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${user.token}` },
                 body: formData
             });
             if (response.ok) {
@@ -251,13 +250,10 @@ const AdminSettings = ({ user, setUser }) => {
     const handleDeleteStaff = async (id) => {
         if (!confirm('Are you sure?')) return;
         try {
-            await fetch('http://localhost/brigdetocollege/backend/admin/manage_staff.php', {
-                method: 'DELETE',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
-                body: JSON.stringify({ id })
+            await apiFetch('admin/manage_staff.php', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'delete', id }),
+                headers: { 'Content-Type': 'application/json' }
             });
             fetchAllStaff();
         } catch (err) { alert('Error deleting'); }
@@ -266,13 +262,10 @@ const AdminSettings = ({ user, setUser }) => {
     // --- STATS ACTIONS ---
     const handleUpdateStat = async (stat) => {
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/manage_stats.php', {
+            const response = await apiFetch('admin/manage_stats.php', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
-                body: JSON.stringify(stat)
+                body: JSON.stringify(stats),
+                headers: { 'Content-Type': 'application/json' }
             });
             if (response.ok) {
                 setEditingStat(null);
@@ -292,9 +285,8 @@ const AdminSettings = ({ user, setUser }) => {
         if (partnerLogoFile) formData.append('logo', partnerLogoFile);
 
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/manage_partners.php', {
+            const response = await apiFetch('admin/manage_partners.php', {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${user.token}` },
                 body: formData
             });
             if (response.ok) {
@@ -308,13 +300,10 @@ const AdminSettings = ({ user, setUser }) => {
     const handleDeletePartner = async (id) => {
         if (!confirm('Are you sure?')) return;
         try {
-            await fetch('http://localhost/brigdetocollege/backend/admin/manage_partners.php', {
-                method: 'DELETE',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
-                body: JSON.stringify({ id })
+            await apiFetch('admin/manage_partners.php', {
+                method: 'POST',
+                body: JSON.stringify({ action: 'delete', id }),
+                headers: { 'Content-Type': 'application/json' }
             });
             fetchAllPartners();
         } catch (err) { alert('Error deleting'); }
@@ -397,11 +386,41 @@ const AdminSettings = ({ user, setUser }) => {
                                     <div className="grid md:grid-cols-2 gap-6 pt-6 border-t border-slate-100">
                                         <div className="space-y-2">
                                             <label className="text-sm font-bold text-slate-700">New Password</label>
-                                            <input type="password" placeholder="••••••••" className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 outline-none" value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} />
+                                            <div className="relative">
+                                                <input 
+                                                    type={showPassword ? "text" : "password"} 
+                                                    placeholder="••••••••" 
+                                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 outline-none pr-12" 
+                                                    value={formData.password} 
+                                                    onChange={e => setFormData({...formData, password: e.target.value})} 
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                                                >
+                                                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                                </button>
+                                            </div>
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-sm font-bold text-slate-700">Confirm Password</label>
-                                            <input type="password" placeholder="••••••••" className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 outline-none" value={formData.confirm_password} onChange={e => setFormData({...formData, confirm_password: e.target.value})} />
+                                            <div className="relative">
+                                                <input 
+                                                    type={showConfirmPassword ? "text" : "password"} 
+                                                    placeholder="••••••••" 
+                                                    className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50 outline-none pr-12" 
+                                                    value={formData.confirm_password} 
+                                                    onChange={e => setFormData({...formData, confirm_password: e.target.value})} 
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                                                >
+                                                    {showConfirmPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="flex justify-end">
@@ -452,13 +471,19 @@ const AdminSettings = ({ user, setUser }) => {
                         <motion.div key="universities" initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-10}}>
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-xl font-bold text-slate-900">Partner Universities</h2>
-                                <button onClick={() => { setEditingUni(null); setUniForm({ name: '', logo_path: '' }); setIsUniModalOpen(true); }} className="px-4 py-2 md:px-5 md:py-2.5 rounded-xl bg-primary-600 text-white font-bold text-xs md:text-sm flex items-center gap-2 shadow-lg shadow-primary-600/20"><Plus className="w-4 h-4"/> Add University</button>
+                                <button onClick={() => { setEditingUni(null); setUniForm({ name: '', logo_path: '' }); setUniLogoFile(null); setIsUniModalOpen(true); }} className="px-4 py-2 md:px-5 md:py-2.5 rounded-xl bg-primary-600 text-white font-bold text-xs md:text-sm flex items-center gap-2 shadow-lg shadow-primary-600/20"><Plus className="w-4 h-4"/> Add University</button>
                             </div>
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-4">
                                 {universities.map(uni => (
                                     <div key={uni.id} className="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex flex-col items-center gap-3 relative group">
-                                        <GraduationCap className="w-8 h-8 text-slate-300 group-hover:text-primary-600 transition-colors" />
-                                        <span className="text-xs font-bold text-slate-700">{uni.name}</span>
+                                        <div className="w-12 h-12 flex items-center justify-center p-2 bg-slate-50 rounded-lg">
+                                            {uni.logo_path ? (
+                                                <img src={getImageUrl(uni.logo_path)} alt={uni.name} className="max-w-full max-h-full object-contain" />
+                                            ) : (
+                                                <GraduationCap className="w-8 h-8 text-slate-300 group-hover:text-primary-600 transition-colors" />
+                                            )}
+                                        </div>
+                                        <span className="text-[10px] font-bold text-slate-700 text-center line-clamp-1">{uni.name}</span>
                                         <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button onClick={() => { setEditingUni(uni); setUniForm(uni); setIsUniModalOpen(true); }} className="p-1.5 bg-slate-100 text-slate-600 rounded-lg"><Edit2 className="w-3 h-3"/></button>
                                             <button onClick={() => handleDeleteUni(uni.id)} className="p-1.5 bg-rose-50 text-rose-600 rounded-lg"><Trash2 className="w-3 h-3"/></button>
@@ -480,7 +505,7 @@ const AdminSettings = ({ user, setUser }) => {
                                 {staff.map(member => (
                                     <div key={member.id} className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm relative group text-center">
                                         <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-slate-100">
-                                            <img src={member.image_path ? `http://localhost/brigdetocollege/${member.image_path}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(member.full_name)}&background=random`} className="w-full h-full object-cover" />
+                                            <img src={member.image_path ? getImageUrl(member.image_path) : `https://ui-avatars.com/api/?name=${encodeURIComponent(member.full_name)}&background=random`} className="w-full h-full object-cover" />
                                         </div>
                                         <h4 className="font-bold text-slate-900 mb-1">{member.full_name}</h4>
                                         <p className="text-xs text-primary-600 font-bold uppercase mb-4">{member.role}</p>
@@ -555,7 +580,7 @@ const AdminSettings = ({ user, setUser }) => {
                                         <div className="flex justify-between items-start mb-6">
                                             <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 p-3 flex items-center justify-center">
                                                 {partner.logo_path ? (
-                                                    <img src={`http://localhost/brigdetocollege/${partner.logo_path}`} alt={partner.name} className="max-w-full max-h-full object-contain" />
+                                                    <img src={getImageUrl(partner.logo_path)} alt={partner.name} className="max-w-full max-h-full object-contain" />
                                                 ) : (
                                                     <Building2 className="w-8 h-8 text-slate-200" />
                                                 )}
@@ -635,17 +660,32 @@ const AdminSettings = ({ user, setUser }) => {
             )}
 
             {isUniModalOpen && (
-                <div className="fixed inset-0 z-[200] flex items-end md:items-center justify-center p-0 md:p-4 bg-slate-900/60 backdrop-blur-sm">
-                    <motion.div 
-                        initial={{y: '100%'}} 
-                        animate={{y: 0}} 
-                        className="bg-white w-full max-w-md rounded-t-[2.5rem] md:rounded-3xl shadow-2xl p-8"
-                    >
-                        <h2 className="text-xl font-bold mb-6">{editingUni ? 'Update' : 'Add'} University</h2>
-                        <form onSubmit={handleSaveUni} className="space-y-4">
-                            <input className="w-full p-4 rounded-xl bg-slate-50" placeholder="University Name" value={uniForm.name} onChange={e => setUniForm({...uniForm, name: e.target.value})} />
-                            <button type="submit" className="w-full py-4 bg-primary-600 text-white font-bold rounded-xl">Save</button>
-                            <button type="button" onClick={()=>setIsUniModalOpen(false)} className="w-full py-2 text-slate-400">Cancel</button>
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+                    <motion.div initial={{scale:0.9,opacity:0}} animate={{scale:1,opacity:1}} className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-8">
+                        <h2 className="text-xl font-bold mb-6">{editingUni ? 'Update' : 'Add'} Partner University</h2>
+                        <form onSubmit={handleSaveUni} className="space-y-6">
+                            <div className="flex flex-col items-center gap-4">
+                                <div className="w-24 h-24 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl relative overflow-hidden flex items-center justify-center shadow-inner group">
+                                    {(uniLogoFile || uniForm.logo_path) ? (
+                                        <img src={uniLogoFile ? URL.createObjectURL(uniLogoFile) : getImageUrl(uniForm.logo_path)} className="max-w-full max-h-full object-contain p-3" />
+                                    ) : (
+                                        <GraduationCap className="w-8 h-8 text-slate-200" />
+                                    )}
+                                    <div className="absolute inset-0 bg-primary-600/0 group-hover:bg-primary-600/10 transition-colors cursor-pointer" onClick={() => document.getElementById('uniLogoInput').click()} />
+                                    <input id="uniLogoInput" type="file" className="hidden" accept="image/*" onChange={e => setUniLogoFile(e.target.files[0])} />
+                                </div>
+                                <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">University Logo</p>
+                            </div>
+
+                            <div className="space-y-2">
+                                <label className="text-sm font-bold text-slate-700">University Name</label>
+                                <input className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none" required value={uniForm.name} onChange={e => setUniForm({...uniForm, name: e.target.value})} />
+                            </div>
+                            
+                            <div className="flex gap-3 pt-4">
+                                <button type="button" onClick={() => setIsUniModalOpen(false)} className="flex-1 py-3.5 rounded-2xl bg-slate-100 text-slate-600 font-bold">Cancel</button>
+                                <button type="submit" className="flex-1 py-3.5 rounded-2xl bg-primary-600 text-white font-bold shadow-lg shadow-primary-500/20">Save</button>
+                            </div>
                         </form>
                     </motion.div>
                 </div>
@@ -662,7 +702,7 @@ const AdminSettings = ({ user, setUser }) => {
                         <form onSubmit={handleSaveStaff} className="space-y-6">
                             <div className="flex flex-col sm:flex-row gap-6">
                                 <div className="w-24 h-24 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl relative overflow-hidden flex items-center justify-center mx-auto sm:mx-0 shrink-0">
-                                    {(photoFile || staffForm.image_path) ? <img src={photoFile ? URL.createObjectURL(photoFile) :`http://localhost/brigdetocollege/${staffForm.image_path}`} className="w-full h-full object-cover" /> : <Upload className="text-slate-300" />}
+                                    {(photoFile || staffForm.image_path) ? <img src={photoFile ? URL.createObjectURL(photoFile) : getImageUrl(staffForm.image_path)} className="w-full h-full object-cover" /> : <Upload className="text-slate-300" />}
                                     <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={e => setPhotoFile(e.target.files[0])} />
                                 </div>
                                 <div className="flex-1 space-y-4">
@@ -694,7 +734,7 @@ const AdminSettings = ({ user, setUser }) => {
                                 <div className="w-24 h-24 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl relative overflow-hidden flex items-center justify-center mx-auto sm:mx-0 shrink-0 shadow-inner">
                                     {(partnerLogoFile || partnerForm.logo_path) ? (
                                         <img 
-                                            src={partnerLogoFile ? URL.createObjectURL(partnerLogoFile) : `http://localhost/brigdetocollege/${partnerForm.logo_path}`} 
+                                            src={partnerLogoFile ? URL.createObjectURL(partnerLogoFile) : getImageUrl(partnerForm.logo_path)} 
                                             className="max-w-full max-h-full object-contain p-2" 
                                         />
                                     ) : (

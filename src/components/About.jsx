@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
+import { apiFetch, getImageUrl } from '../utils/api';
 import { Shield, Target, Award, Users, Phone, Loader2 } from 'lucide-react';
 
 const About = () => {
@@ -9,7 +10,7 @@ const About = () => {
     useEffect(() => {
         const fetchStaff = async () => {
             try {
-                const response = await fetch('http://localhost/brigdetocollege/backend/get_staff.php');
+                const response = await apiFetch('get_staff.php');
                 const data = await response.json();
                 if (data.success) {
                     setStaff(data.staff);
@@ -132,9 +133,9 @@ const About = () => {
                                 >
                                     <div className="w-28 h-28 rounded-full overflow-hidden mb-8 ring-8 ring-slate-50 group-hover:ring-primary-50 transition-all shadow-inner">
                                         <img 
-                                            src={member.image_path ? `http://localhost/brigdetocollege/${member.image_path}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(member.full_name)}&background=random`} 
+                                            src={getImageUrl(member.image_path)} 
                                             alt={member.full_name} 
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-110 group-hover:scale-100" 
                                         />
                                     </div>
                                     <h3 className="text-2xl font-display font-bold text-slate-900 mb-2">{member.full_name}</h3>

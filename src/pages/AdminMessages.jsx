@@ -17,6 +17,7 @@ import {
     Plus,
     Calendar
 } from 'lucide-react';
+import { apiFetch } from '../utils/api';
 
 const AdminMessages = ({ user }) => {
     const [messages, setMessages] = useState([]);
@@ -34,9 +35,7 @@ const AdminMessages = ({ user }) => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/get_messages.php', {
-                headers: { 'Authorization': `Bearer ${user.token}` }
-            });
+            const response = await apiFetch('admin/get_messages.php');
             const data = await response.json();
             if (response.ok) {
                 setMessages(data.messages || []);
@@ -55,12 +54,9 @@ const AdminMessages = ({ user }) => {
         setActionId(id);
         const newStatus = currentStatus === 'unread' ? 'read' : 'unread';
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/update_message_status.php', {
+            const response = await apiFetch('admin/update_message_status.php', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, status: newStatus })
             });
             if (response.ok) {
@@ -78,12 +74,9 @@ const AdminMessages = ({ user }) => {
         if (!window.confirm('Are you sure you want to delete this message?')) return;
         setActionId(id);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/delete_message.php', {
+            const response = await apiFetch('admin/delete_message.php', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id })
             });
             if (response.ok) {

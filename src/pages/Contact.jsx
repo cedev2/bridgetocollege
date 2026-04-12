@@ -12,6 +12,7 @@ import {
     CheckCircle2,
     Loader2
 } from 'lucide-react';
+import { apiFetch } from '../utils/api';
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -35,7 +36,7 @@ const Contact = () => {
         setError(null);
         
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/send_contact.php', {
+            const response = await apiFetch('send_contact.php', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

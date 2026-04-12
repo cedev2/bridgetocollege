@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar.jsx';
 import Hero from './components/Hero.jsx';
@@ -24,7 +24,9 @@ import Preloader from './components/Preloader.jsx';
 import SessionModal from './components/SessionModal.jsx';
 import DashboardLayout from './components/DashboardLayout.jsx';
 import CookieConsent from './components/CookieConsent.jsx';
-import ForcePasswordChange from './components/ForcePasswordChange.jsx';
+import UserSettings from './pages/UserSettings.jsx';
+import PasswordAdvisory from './components/PasswordAdvisory.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 
 // Simple Landing Page Component
 const LandingPage = ({ user }) => (
@@ -47,7 +49,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [showSessionModal, setShowSessionModal] = useState(false);
   const location = useLocation();
-  let idleTimer = null;
+  const idleTimerRef = useRef(null);
 
   useEffect(() => {
     // 1. Page Transition Loading
@@ -61,10 +63,10 @@ function App() {
   useEffect(() => {
     // 3. Activity Tracker (Idle Timeout)
     const resetTimer = () => {
-      if (idleTimer) clearTimeout(idleTimer);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
       if (user) {
         // 30 min = 1800000ms
-        idleTimer = setTimeout(() => {
+        idleTimerRef.current = setTimeout(() => {
           setShowSessionModal(true);
           logout();
         }, 1800000);
@@ -79,7 +81,7 @@ function App() {
     }
 
     return () => {
-      if (idleTimer) clearTimeout(idleTimer);
+      if (idleTimerRef.current) clearTimeout(idleTimerRef.current);
       window.removeEventListener('mousemove', resetTimer);
       window.removeEventListener('mousedown', resetTimer);
       window.removeEventListener('keydown', resetTimer);
@@ -108,8 +110,8 @@ function App() {
         onLogout={() => setShowSessionModal(false)}
       />
 
-      {user?.requires_password_change && (
-        <ForcePasswordChange 
+      {user?.requires_password_change && user.role !== 'admin' && (
+        <PasswordAdvisory 
             user={user} 
             onSuccess={(updatedUser) => setUser(updatedUser)} 
         />
@@ -119,50 +121,58 @@ function App() {
       
       {isDashboardRoute ? (
         <DashboardLayout user={user} logout={logout}>
-          <Routes>
-            <Route 
-              path="/dashboard" 
-              element={user ? <UserDashboard user={user} /> : <Navigate to="/login" />} 
-            />
-            <Route 
-              path="/admin-dashboard" 
-              element={user && user.role === 'admin' ? <AdminDashboard user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
-            />
-            <Route 
-              path="/apply" 
-              element={user ? <ApplicationForm user={user} /> : <Navigate to="/login" />} 
-            />
-            <Route 
-              path="/settings" 
-              element={user && user.role === 'admin' ? <AdminSettings user={user} setUser={setUser} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
-            />
-            <Route 
-              path="/admin-messages" 
-              element={user && user.role === 'admin' ? <AdminMessages user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
-            />
-            <Route 
-              path="/admin-reports" 
-              element={user && user.role === 'admin' ? <AdminReports user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
-            />
-            <Route 
-              path="/admin-users" 
-              element={user && user.role === 'admin' ? <AdminUsers user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
-            />
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              <Route 
+                path="/dashboard" 
+                element={user ? <UserDashboard user={user} /> : <Navigate to="/login" />} 
+              />
+              <Route 
+                path="/admin-dashboard" 
+                element={user && user.role === 'admin' ? <AdminDashboard user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
+              />
+              <Route 
+                path="/apply" 
+                element={user ? <ApplicationForm user={user} /> : <Navigate to="/login" />} 
+              />
+              <Route 
+                path="/settings" 
+                element={user ? (
+                  user.role === 'admin' ? 
+                  <AdminSettings user={user} setUser={setUser} /> : 
+                  <UserSettings user={user} setUser={setUser} />
+                ) : <Navigate to="/login" />} 
+              />
+              <Route 
+                path="/admin-messages" 
+                element={user && user.role === 'admin' ? <AdminMessages user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
+              />
+              <Route 
+                path="/admin-reports" 
+                element={user && user.role === 'admin' ? <AdminReports user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
+              />
+              <Route 
+                path="/admin-users" 
+                element={user && user.role === 'admin' ? <AdminUsers user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
+              />
+            </Routes>
+          </ErrorBoundary>
         </DashboardLayout>
       ) : (
         <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<LandingPage user={user} />} />
-            <Route path="/login" element={<Login onLogin={login} />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/terms" element={<TermsAndConditions />} />
-            <Route path="/pricing" element={<Pricing />} />
-            <Route path="/success-stories" element={<SuccessStories />} />
-            <Route path="/partners" element={<Partners />} />
-            <Route path="/contact" element={<Contact />} />
-          </Routes>
+          <ErrorBoundary>
+            <Routes>
+              <Route path="/" element={<LandingPage user={user} />} />
+              <Route path="/login" element={<Login onLogin={login} />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsAndConditions />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/success-stories" element={<SuccessStories />} />
+              <Route path="/partners" element={<Partners />} />
+              <Route path="/contact" element={<Contact />} />
+            </Routes>
+          </ErrorBoundary>
         </main>
       )}
 

@@ -8,10 +8,10 @@ import {
     Clock, 
     Globe, 
     Loader2, 
-    AlertCircle,
     FileSpreadsheet,
     PieChart as PieChartIcon
 } from 'lucide-react';
+import { apiFetch } from '../utils/api';
 import { 
     PieChart, Pie, Cell, 
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
@@ -27,11 +27,7 @@ const AdminReports = ({ user }) => {
         const fetchAllSubmissions = async () => {
             setLoading(true);
             try {
-                const response = await fetch('http://localhost/brigdetocollege/backend/admin/get_all_submissions.php', {
-                    headers: {
-                        'Authorization': `Bearer ${user.token}`
-                    }
-                });
+                const response = await apiFetch('admin/get_all_submissions.php');
                 const data = await response.json();
                 if (response.ok) {
                     setSubmissions(data.submissions || []);

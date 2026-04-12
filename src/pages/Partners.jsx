@@ -9,6 +9,7 @@ import {
     ExternalLink,
     Loader2
 } from 'lucide-react';
+import { apiFetch, getImageUrl } from '../utils/api';
 
 const Partners = () => {
     const [partners, setPartners] = useState([]);
@@ -18,7 +19,7 @@ const Partners = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch('http://localhost/brigdetocollege/backend/get_public_content.php');
+                const response = await apiFetch('get_public_content.php');
                 const data = await response.json();
                 if (response.ok) {
                     setPartners(data.partners || []);
@@ -150,7 +151,7 @@ const Partners = () => {
                                                 <div className="w-16 h-16 mb-6 flex items-center justify-center">
                                                     {partner.logo_path ? (
                                                         <img 
-                                                            src={`http://localhost/brigdetocollege/${partner.logo_path}`} 
+                                                            src={getImageUrl(partner.logo_path)} 
                                                             alt={partner.name} 
                                                             className="max-w-full max-h-full object-contain grayscale group-hover:grayscale-0 transition-all duration-500"
                                                         />
@@ -196,7 +197,7 @@ const Partners = () => {
                                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                                 </a>
                                 <a 
-                                    href="/about" 
+                                    href="/contact" 
                                     className="px-10 py-4 text-slate-600 font-bold hover:text-primary-600 transition-colors"
                                 >
                                     Learn About Our Mission

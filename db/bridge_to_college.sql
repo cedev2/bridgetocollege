@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
     role ENUM('user', 'admin') DEFAULT 'user',
     profile_picture VARCHAR(255),
+    requires_password_change BOOLEAN DEFAULT FALSE,
+    reset_code VARCHAR(10) NULL,
+    reset_code_expires DATETIME NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

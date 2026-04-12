@@ -11,6 +11,7 @@ import {
     MapPin,
     ArrowRight
 } from 'lucide-react';
+import { apiFetch, getImageUrl } from '../utils/api';
 
 const CountUp = ({ end, duration = 2000 }) => {
     const [count, setCount] = useState(0);
@@ -57,7 +58,7 @@ const SuccessStories = () => {
 
     const fetchPublicContent = async () => {
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/get_public_content.php');
+            const response = await apiFetch('get_public_content.php');
             const data = await response.json();
             if (response.ok) {
                 setStats(data.stats || []);
@@ -152,7 +153,7 @@ const SuccessStories = () => {
                             >
                                 <div className="shrink-0 w-24 h-24 rounded-full bg-primary-200 flex items-center justify-center font-bold text-primary-700 text-2xl overflow-hidden shadow-lg border-4 border-white">
                                     {story.image_path ? (
-                                        <img src={story.image_path} alt={story.name} className="w-full h-full object-cover" />
+                                        <img src={getImageUrl(story.image_path)} alt={story.name} className="w-full h-full object-cover" />
                                     ) : story.name.charAt(0)}
                                 </div>
                                 <div className="flex-1">
@@ -235,7 +236,7 @@ const SuccessStories = () => {
                                 className="bg-slate-50 rounded-xl p-4 border border-slate-100 flex flex-col items-center justify-center text-center gap-3 aspect-video group cursor-default"
                             >
                                 {uni.logo_path ? (
-                                    <img src={uni.logo_path} alt={uni.name} className="h-8 object-contain opacity-60 group-hover:opacity-100 transition-opacity" />
+                                    <img src={getImageUrl(uni.logo_path)} alt={uni.name} className="h-8 object-contain opacity-60 group-hover:opacity-100 transition-opacity" />
                                 ) : (
                                     <GraduationCap className="w-8 h-8 text-slate-300 group-hover:text-primary-400 transition-colors" />
                                 )}

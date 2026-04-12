@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Send, User, Mail, Phone, GraduationCap, MapPin, Calendar, Clock, ChevronRight, FileText, Globe, School, CheckCircle } from 'lucide-react';
+import { apiFetch } from '../utils/api';
 
 const universities = [
     "Berea College", "Rollins College", "Colby College", "Trinity College", "Grinnell College",
@@ -57,12 +58,8 @@ const ApplicationForm = ({ user }) => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/submit_application.php', {
+            const response = await apiFetch('submit_application.php', {
                 method: 'POST',
-                headers: { 
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
                 body: JSON.stringify({
                     ...formData,
                     target_countries: formData.target_countries,

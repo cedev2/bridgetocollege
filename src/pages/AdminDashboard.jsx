@@ -26,6 +26,7 @@ import {
     User,
     Check
 } from 'lucide-react';
+import { apiFetch, getImageUrl } from '../utils/api';
 
 const universities = [
     "Berea College", "Rollins College", "Colby College", "Trinity College", "Grinnell College",
@@ -78,11 +79,7 @@ const AdminDashboard = ({ user }) => {
     const fetchAllSubmissions = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/get_all_submissions.php', {
-                headers: {
-                    'Authorization': `Bearer ${user.token}`
-                }
-            });
+            const response = await apiFetch('admin/get_all_submissions.php');
             const data = await response.json();
             if (response.ok) {
                 setSubmissions(data.submissions || []);
@@ -99,12 +96,9 @@ const AdminDashboard = ({ user }) => {
     const updateStatus = async (id, newStatus) => {
         setUpdatingId(id);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/update_submission_status.php', {
+            const response = await apiFetch('admin/update_submission_status.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ id, status: newStatus })
             });
             const data = await response.json();
@@ -128,12 +122,9 @@ const AdminDashboard = ({ user }) => {
         e.preventDefault();
         setRegistering(true);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/create_manual_submission.php', {
+            const response = await apiFetch('admin/create_manual_submission.php', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(manualForm)
             });
             const data = await response.json();

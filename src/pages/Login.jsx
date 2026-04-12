@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Mail, Lock, LogIn, AlertCircle, Key, ArrowRight, ShieldCheck, ArrowLeft, CheckCircle } from 'lucide-react';
+import { Mail, Lock, LogIn, AlertCircle, Key, ArrowRight, ShieldCheck, ArrowLeft, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { apiFetch } from '../utils/api';
 
 const Login = ({ onLogin }) => {
     // view can be: 'login' | 'forgot_request' | 'forgot_reset' | 'forgot_success'
@@ -19,6 +20,8 @@ const Login = ({ onLogin }) => {
     const [error, setError] = useState('');
     const [successMsg, setSuccessMsg] = useState('');
     const [loading, setLoading] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
     
     const navigate = useNavigate();
 
@@ -29,7 +32,7 @@ const Login = ({ onLogin }) => {
         setError('');
 
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/login.php', {
+            const response = await apiFetch('login.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
@@ -64,7 +67,7 @@ const Login = ({ onLogin }) => {
         setSuccessMsg('');
 
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/request_reset.php', {
+            const response = await apiFetch('request_reset.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: forgotEmail })
@@ -102,7 +105,7 @@ const Login = ({ onLogin }) => {
         }
 
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/reset_password.php', {
+            const response = await apiFetch('reset_password.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -185,14 +188,23 @@ const Login = ({ onLogin }) => {
                                             Forgot password?
                                         </button>
                                     </div>
-                                    <input
-                                        type="password"
-                                        required
-                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none transition-all font-medium"
-                                        placeholder="••••••••"
-                                        value={formData.password}
-                                        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            required
+                                            className="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none transition-all font-medium pr-12"
+                                            placeholder="••••••••"
+                                            value={formData.password}
+                                            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                                        >
+                                            {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <button
@@ -332,14 +344,23 @@ const Login = ({ onLogin }) => {
                                     <label className="text-xs font-bold uppercase tracking-widest text-slate-500 flex items-center gap-2">
                                         <Lock className="w-4 h-4 text-primary-600" /> New Password
                                     </label>
-                                    <input
-                                        type="password"
-                                        required
-                                        className="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none transition-all font-medium"
-                                        placeholder="At least 8 characters"
-                                        value={newPassword}
-                                        onChange={(e) => setNewPassword(e.target.value)}
-                                    />
+                                    <div className="relative">
+                                        <input
+                                            type={showNewPassword ? "text" : "password"}
+                                            required
+                                            className="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 focus:border-transparent outline-none transition-all font-medium pr-12"
+                                            placeholder="At least 8 characters"
+                                            value={newPassword}
+                                            onChange={(e) => setNewPassword(e.target.value)}
+                                        />
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowNewPassword(!showNewPassword)}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors p-1"
+                                        >
+                                            {showNewPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <button

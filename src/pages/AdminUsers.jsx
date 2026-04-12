@@ -16,6 +16,7 @@ import {
     Filter,
     ArrowUpDown
 } from 'lucide-react';
+import { apiFetch } from '../utils/api';
 
 const AdminUsers = ({ user }) => {
     const [users, setUsers] = useState([]);
@@ -34,11 +35,7 @@ const AdminUsers = ({ user }) => {
     const fetchUsers = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/get_users.php', {
-                headers: {
-                    'Authorization': `Bearer ${user.token}`
-                }
-            });
+            const response = await apiFetch('admin/get_users.php');
             const data = await response.json();
             if (response.ok) {
                 setUsers(data.users || []);
@@ -57,11 +54,10 @@ const AdminUsers = ({ user }) => {
         
         setActionLoading(true);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/get_users.php', {
+            const response = await apiFetch('admin/get_users.php', {
                 method: 'DELETE',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ id: userId })
             });
@@ -83,11 +79,10 @@ const AdminUsers = ({ user }) => {
     const updateUserRole = async (userId, newRole) => {
         setActionLoading(true);
         try {
-            const response = await fetch('http://localhost/brigdetocollege/backend/admin/get_users.php', {
+            const response = await apiFetch('admin/get_users.php', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${user.token}`
+                    'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({ id: userId, role: newRole })
             });

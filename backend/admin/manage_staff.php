@@ -39,12 +39,23 @@ switch ($method) {
             if (!file_exists($target_dir)) {
                 mkdir($target_dir, 0777, true);
             }
+            $allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            $fileType = mime_content_type($_FILES['photo']['tmp_name']);
+            if (!in_array($fileType, $allowedTypes)) {
+                json_response(['error' => 'Invalid file type. Only JPG, PNG, GIF, and WEBP are allowed.'], 400);
+            }
+
             $file_extension = strtolower(pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION));
+            // Additional security check to prevent double extensions or bypassing mime checks
+            if (!in_array($file_extension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                json_response(['error' => 'Invalid file extension.'], 400);
+            }
+
             $file_name = uniqid() . '.' . $file_extension;
             $target_file = $target_dir . $file_name;
 
             if (move_uploaded_file($_FILES['photo']['tmp_name'], $target_file)) {
-                $image_path = "backend/uploads/team/" . $file_name;
+                $image_path = "uploads/team/" . $file_name;
             }
         }
 

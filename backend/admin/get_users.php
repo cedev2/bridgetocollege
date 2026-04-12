@@ -50,6 +50,11 @@ switch ($method) {
             json_response(['error' => 'User ID and role are required'], 400);
         }
 
+        // Prevent admin from changing their own role (self-demotion lockout prevention)
+        if ($data['id'] == $userData['id']) {
+            json_response(['error' => 'You cannot change your own role to avoid being locked out'], 403);
+        }
+
         try {
             $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
             $stmt->execute([$data['role'], $data['id']]);

@@ -15,6 +15,7 @@ import {
     BarChart2
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { apiFetch, getImageUrl } from '../utils/api';
 
 const DashboardLayout = ({ user, logout, children }) => {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -28,7 +29,7 @@ const DashboardLayout = ({ user, logout, children }) => {
             ...(user?.role === 'admin' ? [{ name: 'Users', path: '/admin-users', icon: <Users className="w-5 h-5" /> }] : []),
             ...(user?.role === 'admin' ? [{ name: 'Messages', path: '/admin-messages', icon: <MessageSquare className="w-5 h-5" /> }] : []),
             ...(user?.role === 'admin' ? [{ name: 'Reports', path: '/admin-reports', icon: <BarChart2 className="w-5 h-5" /> }] : []),
-            ...(user?.role === 'admin' ? [{ name: 'Settings', path: '/settings', icon: <Settings className="w-5 h-5" /> }] : []),
+            { name: 'Settings', path: '/settings', icon: <Settings className="w-5 h-5" /> },
             { name: 'Common App', path: 'https://www.commonapp.org/', icon: <Globe className="w-5 h-5" />, isExternal: true },
             { name: 'Back to Website', path: '/', icon: <Home className="w-5 h-5" /> }
         ];
@@ -76,19 +77,21 @@ const DashboardLayout = ({ user, logout, children }) => {
                 </div>
 
                 <div className="p-6 pb-2 border-b border-white/10">
-                    <div className="flex items-center gap-3 mb-6">
-                        {user?.profile_picture ? (
-                            <img src={user.profile_picture} alt="Profile" className="w-12 h-12 rounded-xl object-cover border border-primary-500/20" />
-                        ) : (
-                            <div className="w-12 h-12 rounded-xl bg-primary-600/20 text-primary-400 flex items-center justify-center font-bold text-lg border border-primary-500/20">
-                                {user?.full_name?.charAt(0) || 'U'}
+                    {user && (
+                        <div className="flex items-center gap-3 mb-6">
+                            {user.profile_picture ? (
+                                <img src={getImageUrl(user.profile_picture)} alt="Profile" className="w-12 h-12 rounded-xl object-cover border border-primary-500/20" />
+                            ) : (
+                                <div className="w-12 h-12 rounded-xl bg-primary-600/20 text-primary-400 flex items-center justify-center font-bold text-lg border border-primary-500/20">
+                                    {user.full_name?.charAt(0) || 'U'}
+                                </div>
+                            )}
+                            <div className="min-w-0 flex-1">
+                                <div className="font-bold text-sm truncate">{user.full_name}</div>
+                                <div className="text-xs text-primary-400 font-medium capitalize">{user.role}</div>
                             </div>
-                        )}
-                        <div>
-                            <div className="font-bold text-sm truncate w-40">{user?.full_name}</div>
-                            <div className="text-xs text-primary-400 font-medium capitalize">{user?.role}</div>
                         </div>
-                    </div>
+                    )}
                 </div>
 
                 <nav className="flex-1 p-4 space-y-2">
