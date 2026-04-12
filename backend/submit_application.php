@@ -41,6 +41,7 @@ try {
         $data['has_transcripts'] ?? 'No'
     ];
     $stmt->execute($values);
+    log_action($userId, 'Application Submit', 'User submitted an application for ' . ($data['full_name'] ?? 'N/A'));
     json_response(['message' => 'Application submitted successfully!']);
 } catch (Exception $e) {
     json_response(['error' => 'Submission failed: ' . $e->getMessage()], 500);

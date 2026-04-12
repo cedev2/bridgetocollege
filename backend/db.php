@@ -37,6 +37,17 @@ function check_auth() {
     return $userData;
 }
 
+function log_action($userId, $action, $details = null) {
+    global $pdo;
+    try {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? '0.0.0.0';
+        $stmt = $pdo->prepare("INSERT INTO system_logs (user_id, action, details, ip_address) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$userId, $action, $details, $ip]);
+    } catch (Exception $e) {
+        // Fail silently to avoid interrupting the main flow
+    }
+}
+
 // Helper for CORS and JSON response
 function json_response($data, $code = 200) {
     header('Access-Control-Allow-Origin: *');

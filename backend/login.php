@@ -23,6 +23,8 @@ if ($user && password_verify($data['password'], $user['password'])) {
         'role' => $user['role']
     ]);
 
+    log_action($user['id'], 'Login', 'User ' . $user['email'] . ' logged in.');
+
     json_response([
         'message' => 'Login successful', 
         'user' => $user,

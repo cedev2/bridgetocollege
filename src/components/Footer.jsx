@@ -75,8 +75,18 @@ const Footer = () => {
                     </div>
                 </div>
 
-                <div className="pt-10 border-t border-primary-900 flex flex-col md:flex-row justify-between items-center gap-4 text-primary-400 text-xs">
+                <div className="pt-10 border-t border-primary-900 flex flex-col md:flex-row justify-between items-center gap-6 text-primary-400 text-xs">
                     <p>© 2026 Bridge to College. All rights reserved.</p>
+                    
+                    <a 
+                        href="http://heloxtech.page.gd/?i=1" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-900 text-primary-200 hover:bg-white hover:text-primary-950 transition-all font-bold group shadow-inner"
+                    >
+                        Powered by <span className="text-white group-hover:text-primary-950">Helox tech</span>
+                    </a>
+
                     <div className="flex gap-6">
                         <Link to="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
                         <Link to="/terms" className="hover:text-white transition-colors">Terms and Conditions</Link>

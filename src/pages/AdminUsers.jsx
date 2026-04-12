@@ -16,7 +16,7 @@ import {
     Filter,
     ArrowUpDown
 } from 'lucide-react';
-import { apiFetch } from '../utils/api';
+import { apiFetch, getImageUrl } from '../utils/api';
 
 const AdminUsers = ({ user }) => {
     const [users, setUsers] = useState([]);
@@ -215,7 +215,7 @@ const AdminUsers = ({ user }) => {
                                             <div className="flex items-center gap-4">
                                                 <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-lg border border-indigo-100 shadow-sm">
                                                     {u.profile_picture ? (
-                                                        <img src={u.profile_picture} alt="" className="w-full h-full object-cover rounded-2xl" />
+                                                        <img src={getImageUrl(u.profile_picture)} alt="" className="w-full h-full object-cover rounded-2xl" />
                                                     ) : (
                                                         u.full_name?.charAt(0) || 'U'
                                                     )}
@@ -278,7 +278,7 @@ const AdminUsers = ({ user }) => {
                                 <div className="flex flex-col items-center text-center">
                                     <div className="w-24 h-24 rounded-3xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-3xl border-2 border-indigo-100 shadow-xl mb-4">
                                         {selectedUser.profile_picture ? (
-                                            <img src={selectedUser.profile_picture} alt="" className="w-full h-full object-cover rounded-3xl" />
+                                            <img src={getImageUrl(selectedUser.profile_picture)} alt="" className="w-full h-full object-cover rounded-3xl" />
                                         ) : (
                                             selectedUser.full_name?.charAt(0) || 'U'
                                         )}

@@ -37,7 +37,10 @@ CREATE TABLE IF NOT EXISTS submissions (
     has_transcripts VARCHAR(10),
     status ENUM('Pending', 'Complete', 'Reject') DEFAULT 'Pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX (user_id),
+    INDEX (status),
+    INDEX (created_at)
 );
 
 -- Seed an admin user (email: emery@gmail.com, pass: password123)
@@ -65,7 +68,9 @@ CREATE TABLE IF NOT EXISTS testimonials (
     year VARCHAR(20),
     is_featured BOOLEAN DEFAULT FALSE,
     image_path VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX (is_featured),
+    INDEX (created_at)
 );
 
 CREATE TABLE IF NOT EXISTS universities (
@@ -126,7 +131,9 @@ CREATE TABLE IF NOT EXISTS partners (
     category ENUM('Rwandan University', 'Rwandan High School', 'International University', 'Scholarship & Funding', 'Educational Organization') NOT NULL,
     logo_path VARCHAR(255),
     website_url VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX (category),
+    INDEX (created_at)
 );
 
 CREATE TABLE IF NOT EXISTS contact_messages (
@@ -137,5 +144,19 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     subject VARCHAR(255),
     message TEXT NOT NULL,
     status ENUM('unread', 'read', 'replied') DEFAULT 'unread',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX (status),
+    INDEX (created_at)
+);
+
+CREATE TABLE IF NOT EXISTS system_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,
+    action VARCHAR(255) NOT NULL,
+    details TEXT,
+    ip_address VARCHAR(45),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL,
+    INDEX (action),
+    INDEX (created_at)
 );

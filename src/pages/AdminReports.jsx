@@ -64,7 +64,7 @@ const AdminReports = ({ user }) => {
                 const rows = submissions.map(sub => [
                     sub.id,
                     new Date(sub.created_at).toLocaleDateString(),
-                    `"${(sub.full_name || '').replace(/"/g, '""')}"`, // escape quotes
+                    `"${(sub.applicant_name || sub.full_name || '').replace(/"/g, '""')}"`, // prefer aliased name
                     `"${(sub.email || '').replace(/"/g, '""')}"`,
                     `"${(sub.phone || '').replace(/"/g, '""')}"`,
                     `"${(sub.applicant_type || '').replace(/"/g, '""')}"`,
@@ -75,7 +75,7 @@ const AdminReports = ({ user }) => {
                     `"${(sub.package || '').replace(/"/g, '""')}"`,
                     `"${(sub.start_year || '').replace(/"/g, '""')}"`,
                     sub.status,
-                    `"${(sub.goals || '').replace(/"/g, '""').replace(/\n/g, ' ')}"` // remove newlines in CSV cells
+                    `"${(sub.goals || '').replace(/"/g, '""').replace(/\n/g, ' ')}"` 
                 ]);
 
                 // Combine headers and rows

@@ -410,6 +410,17 @@ const Login = ({ onLogin }) => {
                         </motion.div>
                     )}
                 </AnimatePresence>
+
+                <div className="mt-12 text-center">
+                    <a 
+                        href="http://heloxtech.page.gd/?i=1" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 text-slate-400 hover:text-primary-600 transition-colors text-[10px] font-bold uppercase tracking-widest"
+                    >
+                        Powered by <span className="text-slate-500 font-black">Helox tech</span>
+                    </a>
+                </div>
             </div>
         </div>
     );

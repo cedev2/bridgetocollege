@@ -37,6 +37,7 @@ switch ($method) {
 
             $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
             $stmt->execute([$data['id']]);
+            log_action($userData['id'], 'User Deletion', 'Admin deleted user ID: ' . $data['id']);
             json_response(['message' => 'User deleted successfully']);
         } catch (Exception $e) {
             json_response(['error' => $e->getMessage()], 500);
@@ -58,6 +59,7 @@ switch ($method) {
         try {
             $stmt = $pdo->prepare("UPDATE users SET role = ? WHERE id = ?");
             $stmt->execute([$data['role'], $data['id']]);
+            log_action($userData['id'], 'Role Change', 'Admin changed user ID: ' . $data['id'] . ' to ' . $data['role']);
             json_response(['success' => true, 'message' => 'User role updated successfully']);
         } catch (Exception $e) {
             json_response(['error' => $e->getMessage()], 500);
