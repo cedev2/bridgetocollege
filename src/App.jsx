@@ -33,10 +33,10 @@ import ScrollToTop from './components/ScrollToTop.jsx';
 // Simple Landing Page Component
 const LandingPage = ({ user }) => (
   <>
-    <SEO 
-        title="Your Path to Higher Education" 
-        description="Bridge to College empowers Rwandan students to achieve their higher education dreams through personalized guidance, scholarship support, and expert university application assistance." 
-        keywords="Education Rwanda, University Application Rwanda, Scholarships Rwanda, Bridge to College, Higher Education Rwanda"
+    <SEO
+      title="Your Path to Higher Education"
+      description="Bridge to College empowers Rwandan students to achieve their higher education dreams through personalized guidance, scholarship support, and expert university application assistance."
+      keywords="Education Rwanda, University Application Rwanda, Scholarships Rwanda, Bridge to College, Higher Education Rwanda"
     />
     <Hero user={user} />
     <About />
@@ -112,56 +112,56 @@ function App() {
     <div className="min-h-screen bg-slate-50 flex flex-col">
       <ScrollToTop />
       <Preloader isLoading={loading} />
-      <SessionModal 
-        isOpen={showSessionModal} 
-        onConfirm={() => { setShowSessionModal(false); window.location.href='/login'; }}
+      <SessionModal
+        isOpen={showSessionModal}
+        onConfirm={() => { setShowSessionModal(false); window.location.href = '/login'; }}
         onLogout={() => setShowSessionModal(false)}
       />
 
-      {user?.requires_password_change && user.role !== 'admin' && (
-        <PasswordAdvisory 
-            user={user} 
-            onSuccess={(updatedUser) => setUser(updatedUser)} 
+      {!!user?.requires_password_change && user.role !== 'admin' && (
+        <PasswordAdvisory
+          user={user}
+          onSuccess={(updatedUser) => setUser(updatedUser)}
         />
       )}
-      
+
       {!isDashboardRoute && <Navbar user={user} logout={logout} />}
-      
+
       {isDashboardRoute ? (
         <DashboardLayout user={user} logout={logout}>
           <ErrorBoundary>
             <Routes>
-              <Route 
-                path="/dashboard" 
-                element={user ? <UserDashboard user={user} /> : <Navigate to="/login" />} 
+              <Route
+                path="/dashboard"
+                element={user ? <UserDashboard user={user} /> : <Navigate to="/login" />}
               />
-              <Route 
-                path="/admin-dashboard" 
-                element={user && user.role === 'admin' ? <AdminDashboard user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
+              <Route
+                path="/admin-dashboard"
+                element={user && user.role === 'admin' ? <AdminDashboard user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />}
               />
-              <Route 
-                path="/apply" 
-                element={user ? <ApplicationForm user={user} /> : <Navigate to="/login" />} 
+              <Route
+                path="/apply"
+                element={user ? <ApplicationForm user={user} /> : <Navigate to="/login" />}
               />
-              <Route 
-                path="/settings" 
+              <Route
+                path="/settings"
                 element={user ? (
-                  user.role === 'admin' ? 
-                  <AdminSettings user={user} setUser={setUser} /> : 
-                  <UserSettings user={user} setUser={setUser} />
-                ) : <Navigate to="/login" />} 
+                  user.role === 'admin' ?
+                    <AdminSettings user={user} setUser={setUser} /> :
+                    <UserSettings user={user} setUser={setUser} />
+                ) : <Navigate to="/login" />}
               />
-              <Route 
-                path="/admin-messages" 
-                element={user && user.role === 'admin' ? <AdminMessages user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
+              <Route
+                path="/admin-messages"
+                element={user && user.role === 'admin' ? <AdminMessages user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />}
               />
-              <Route 
-                path="/admin-reports" 
-                element={user && user.role === 'admin' ? <AdminReports user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
+              <Route
+                path="/admin-reports"
+                element={user && user.role === 'admin' ? <AdminReports user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />}
               />
-              <Route 
-                path="/admin-users" 
-                element={user && user.role === 'admin' ? <AdminUsers user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />} 
+              <Route
+                path="/admin-users"
+                element={user && user.role === 'admin' ? <AdminUsers user={user} /> : <Navigate to={user ? "/dashboard" : "/login"} />}
               />
             </Routes>
           </ErrorBoundary>

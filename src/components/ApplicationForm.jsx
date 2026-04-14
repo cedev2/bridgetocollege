@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { Send, User, Mail, Phone, GraduationCap, MapPin, Calendar, Clock, ChevronRight, FileText, Globe, School, CheckCircle } from 'lucide-react';
 import { apiFetch } from '../utils/api';
 

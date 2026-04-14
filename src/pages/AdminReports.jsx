@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { 
-    Download, 
-    BarChart2, 
-    Users, 
-    CheckCircle, 
-    Clock, 
-    Globe, 
-    Loader2, 
+import { motion } from 'motion/react';
+import {
+    Download,
+    BarChart2,
+    Users,
+    CheckCircle,
+    Clock,
+    Globe,
+    Loader2,
     FileSpreadsheet,
     PieChart as PieChartIcon
 } from 'lucide-react';
 import { apiFetch } from '../utils/api';
-import { 
-    PieChart, Pie, Cell, 
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer 
+import {
+    PieChart, Pie, Cell,
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 
 const AdminReports = ({ user }) => {
@@ -75,7 +75,7 @@ const AdminReports = ({ user }) => {
                     `"${(sub.package || '').replace(/"/g, '""')}"`,
                     `"${(sub.start_year || '').replace(/"/g, '""')}"`,
                     sub.status,
-                    `"${(sub.goals || '').replace(/"/g, '""').replace(/\n/g, ' ')}"` 
+                    `"${(sub.goals || '').replace(/"/g, '""').replace(/\n/g, ' ')}"`
                 ]);
 
                 // Combine headers and rows
@@ -108,7 +108,7 @@ const AdminReports = ({ user }) => {
     const totalApplicants = submissions.length;
     const completedApps = submissions.filter(s => s.status === 'Complete').length;
     const pendingApps = submissions.filter(s => s.status === 'Pending').length;
-    
+
     // Unique countries
     const countriesArray = submissions.map(s => s.target_countries).filter(Boolean);
     const uniqueCountries = new Set();
@@ -116,7 +116,7 @@ const AdminReports = ({ user }) => {
     const countriesCount = uniqueCountries.size;
 
     // --- CHART DATA PREPARATION ---
-    
+
     // Status Pie Chart
     const statusData = [
         { name: 'Complete', value: completedApps, color: '#10b981' }, // emerald-500
@@ -165,8 +165,8 @@ const AdminReports = ({ user }) => {
                             <p className="text-sm md:text-base text-slate-500 font-medium font-sans">Business analytics and data export.</p>
                         </div>
                     </div>
-                    
-                    <button 
+
+                    <button
                         onClick={handleExportCSV}
                         disabled={loading || exporting || submissions.length === 0}
                         className={`w-full md:w-auto px-6 py-3 bg-emerald-600 text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-emerald-500/20 transition-all ${loading || exporting || submissions.length === 0 ? 'opacity-70 cursor-not-allowed' : 'hover:bg-emerald-700 hover:-translate-y-1'}`}
@@ -250,7 +250,7 @@ const AdminReports = ({ user }) => {
                                                 <Cell key={`cell-${index}`} fill={entry.color} />
                                             ))}
                                         </Pie>
-                                        <Tooltip 
+                                        <Tooltip
                                             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                                             itemStyle={{ fontWeight: 'bold' }}
                                         />
@@ -271,7 +271,7 @@ const AdminReports = ({ user }) => {
                                         <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
                                         <XAxis type="number" hide />
                                         <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} width={80} />
-                                        <Tooltip 
+                                        <Tooltip
                                             cursor={{ fill: '#f8fafc' }}
                                             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                                         />
@@ -292,7 +292,7 @@ const AdminReports = ({ user }) => {
                                         <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                                         <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontWeight: 500 }} />
                                         <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b' }} allowDecimals={false} />
-                                        <Tooltip 
+                                        <Tooltip
                                             cursor={{ fill: '#f8fafc' }}
                                             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
                                         />
@@ -327,7 +327,7 @@ const AdminReports = ({ user }) => {
                             <p className="text-slate-500 font-medium mb-8 leading-relaxed">
                                 You have {totalApplicants} complete applicant records ready to be analyzed. Exporting will provide a perfectly formatted spreadsheet including all specific preferences and applicant goals.
                             </p>
-                            <button 
+                            <button
                                 onClick={handleExportCSV}
                                 disabled={exporting}
                                 className="w-full sm:w-auto px-8 py-4 bg-emerald-600 text-white rounded-2xl font-bold text-lg inline-flex items-center justify-center gap-3 shadow-xl shadow-emerald-500/20 hover:bg-emerald-700 hover:-translate-y-1 transition-all"

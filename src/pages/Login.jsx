@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Mail, Lock, LogIn, AlertCircle, Key, ArrowRight, ShieldCheck, ArrowLeft, CheckCircle, Eye, EyeOff } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { apiFetch } from '../utils/api';
 import SEO from '../components/SEO.jsx';
 

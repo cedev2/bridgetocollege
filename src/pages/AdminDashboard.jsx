@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { 
-    Users, 
-    Search, 
-    Filter, 
-    Download, 
-    CheckCircle, 
-    XCircle, 
-    Clock, 
-    MoreVertical, 
+import { motion, AnimatePresence } from 'motion/react';
+import {
+    Users,
+    Search,
+    Filter,
+    Download,
+    CheckCircle,
+    XCircle,
+    Clock,
+    MoreVertical,
     Mail,
     Phone,
     Plus,
@@ -40,6 +40,7 @@ const universities = [
     "Kepler College", "Other"
 ];
 
+
 const AdminDashboard = ({ user }) => {
     const [submissions, setSubmissions] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -48,7 +49,7 @@ const AdminDashboard = ({ user }) => {
     const [filterStatus, setFilterStatus] = useState('All');
     const [selectedStudent, setSelectedStudent] = useState(null);
     const [updatingId, setUpdatingId] = useState(null);
-    
+
     // Manual Registration State
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const [registerStep, setRegisterStep] = useState(1);
@@ -162,8 +163,8 @@ const AdminDashboard = ({ user }) => {
     const filteredSubmissions = submissions.filter(s => {
         const fullName = s.full_name || '';
         const email = s.email || '';
-        const matchesSearch = fullName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                             email.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            email.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesFilter = filterStatus === 'All' || s.status === filterStatus;
         return matchesSearch && matchesFilter;
     });
@@ -181,7 +182,7 @@ const AdminDashboard = ({ user }) => {
                             <p className="text-sm md:text-base text-slate-500 font-medium font-sans">Track and process student applications.</p>
                         </div>
                     </div>
-                    <button 
+                    <button
                         onClick={() => setIsRegisterModalOpen(true)}
                         className="w-full md:w-auto px-6 py-3 bg-primary-600 text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary-500/20 hover:bg-primary-700 transition-all"
                     >
@@ -192,8 +193,8 @@ const AdminDashboard = ({ user }) => {
                 <div className="flex flex-col md:flex-row gap-4 mb-6">
                     <div className="flex-1 relative group">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-primary-600" />
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             placeholder="Search applicants..."
                             className="w-full pl-12 pr-4 py-3.5 bg-white border border-slate-200 rounded-2xl focus:ring-2 focus:ring-primary-600 outline-none shadow-sm transition-all"
                             value={searchTerm}
@@ -201,7 +202,7 @@ const AdminDashboard = ({ user }) => {
                         />
                     </div>
                     <div className="flex gap-2">
-                        <select 
+                        <select
                             className="flex-1 md:flex-none px-6 py-3.5 bg-white border border-slate-200 rounded-2xl outline-none shadow-sm cursor-pointer font-bold text-slate-700 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2020%2020%22%3E%3Cpath%20stroke%3D%22%236b7280%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20stroke-width%3D%221.5%22%20d%3D%22m6%208%204%204%204-4%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[right_1rem_center] bg-no-repeat pr-12"
                             value={filterStatus}
                             onChange={(e) => setFilterStatus(e.target.value)}
@@ -238,12 +239,12 @@ const AdminDashboard = ({ user }) => {
                             </thead>
                             <tbody className="divide-y divide-slate-100">
                                 {loading ? (
-                                    <tr><td colSpan="4" className="py-20 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary-600 mx-auto mb-2"/><p className="text-slate-400 font-medium">Fetching applicants...</p></td></tr>
+                                    <tr><td colSpan="4" className="py-20 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary-600 mx-auto mb-2" /><p className="text-slate-400 font-medium">Fetching applicants...</p></td></tr>
                                 ) : filteredSubmissions.length === 0 ? (
-                                    <tr><td colSpan="4" className="py-20 text-center"><Users className="w-8 h-8 text-slate-200 mx-auto mb-2"/><p className="text-slate-400 font-medium">No applicants found matching your search.</p></td></tr>
+                                    <tr><td colSpan="4" className="py-20 text-center"><Users className="w-8 h-8 text-slate-200 mx-auto mb-2" /><p className="text-slate-400 font-medium">No applicants found matching your search.</p></td></tr>
                                 ) : filteredSubmissions.map(sub => (
-                                    <tr 
-                                        key={sub.id} 
+                                    <tr
+                                        key={sub.id}
                                         onClick={() => setSelectedStudent(sub)}
                                         className="hover:bg-slate-50/50 transition-colors cursor-pointer group"
                                     >
@@ -278,12 +279,12 @@ const AdminDashboard = ({ user }) => {
                     {/* Mobile Card View */}
                     <div className="md:hidden divide-y divide-slate-100">
                         {loading ? (
-                            <div className="py-20 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary-600 mx-auto mb-2"/><p className="text-slate-400 font-medium">Loading...</p></div>
+                            <div className="py-20 text-center"><Loader2 className="w-8 h-8 animate-spin text-primary-600 mx-auto mb-2" /><p className="text-slate-400 font-medium">Loading...</p></div>
                         ) : filteredSubmissions.length === 0 ? (
                             <div className="py-20 text-center text-slate-400 font-medium font-sans">No applicants found</div>
                         ) : filteredSubmissions.map(sub => (
-                            <div 
-                                key={sub.id} 
+                            <div
+                                key={sub.id}
                                 onClick={() => setSelectedStudent(sub)}
                                 className="p-5 active:bg-slate-50 transition-colors flex items-center justify-between gap-4"
                             >
@@ -313,7 +314,7 @@ const AdminDashboard = ({ user }) => {
             <AnimatePresence>
                 {selectedStudent && (
                     <div className="fixed inset-0 z-[100] flex justify-end bg-slate-900/50 backdrop-blur-sm">
-                        <motion.div 
+                        <motion.div
                             initial={{ x: '100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '100%' }}
@@ -325,7 +326,7 @@ const AdminDashboard = ({ user }) => {
                                     <h2 className="text-xl font-bold font-display text-slate-900">{selectedStudent.full_name}'s Profile</h2>
                                     <p className="text-sm text-slate-500">Application Details</p>
                                 </div>
-                                <button 
+                                <button
                                     onClick={() => setSelectedStudent(null)}
                                     className="p-2 bg-slate-100 hover:bg-slate-200 rounded-full text-slate-600 transition-colors"
                                 >
@@ -412,7 +413,7 @@ const AdminDashboard = ({ user }) => {
                                 <div className="pt-8 mt-4 border-t border-slate-200">
                                     <h3 className="text-sm font-bold text-slate-900 mb-3 uppercase tracking-wider">Update Application Status</h3>
                                     <div className="flex gap-3">
-                                        <select 
+                                        <select
                                             className="flex-1 p-4 rounded-2xl border border-slate-200 bg-slate-50 outline-none focus:ring-2 focus:ring-primary-600 font-bold text-slate-700 shadow-inner"
                                             value={selectedStudent.status}
                                             onChange={(e) => updateStatus(selectedStudent.id, e.target.value)}
@@ -439,7 +440,7 @@ const AdminDashboard = ({ user }) => {
             <AnimatePresence>
                 {isRegisterModalOpen && (
                     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm overflow-y-auto">
-                        <motion.div 
+                        <motion.div
                             initial={{ scale: 0.95, opacity: 0 }}
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.95, opacity: 0 }}
@@ -463,19 +464,19 @@ const AdminDashboard = ({ user }) => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Full Name *</label>
-                                            <input type="text" required className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium" placeholder="Legal Name" value={manualForm.full_name} onChange={(e) => setManualForm({...manualForm, full_name: e.target.value})} />
+                                            <input type="text" required className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium" placeholder="Legal Name" value={manualForm.full_name} onChange={(e) => setManualForm({ ...manualForm, full_name: e.target.value })} />
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Email Address *</label>
-                                            <input type="email" required className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium text-primary-600" placeholder="email@example.com" value={manualForm.email} onChange={(e) => setManualForm({...manualForm, email: e.target.value})} />
+                                            <input type="email" required className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium text-primary-600" placeholder="email@example.com" value={manualForm.email} onChange={(e) => setManualForm({ ...manualForm, email: e.target.value })} />
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Phone Number</label>
-                                            <input type="tel" className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium" placeholder="+250..." value={manualForm.phone} onChange={(e) => setManualForm({...manualForm, phone: e.target.value})} />
+                                            <input type="tel" className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium" placeholder="+250..." value={manualForm.phone} onChange={(e) => setManualForm({ ...manualForm, phone: e.target.value })} />
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Contact Preference</label>
-                                            <select className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-bold text-slate-700" value={manualForm.contact_method} onChange={(e) => setManualForm({...manualForm, contact_method: e.target.value})}>
+                                            <select className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-bold text-slate-700" value={manualForm.contact_method} onChange={(e) => setManualForm({ ...manualForm, contact_method: e.target.value })}>
                                                 <option>Email</option>
                                                 <option>WhatsApp</option>
                                                 <option>Phone Call</option>
@@ -493,22 +494,22 @@ const AdminDashboard = ({ user }) => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Applicant Type</label>
-                                            <select className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-bold text-slate-700" value={manualForm.applicant_type} onChange={(e) => setManualForm({...manualForm, applicant_type: e.target.value})}>
+                                            <select className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-bold text-slate-700" value={manualForm.applicant_type} onChange={(e) => setManualForm({ ...manualForm, applicant_type: e.target.value })}>
                                                 <option value="High school graduate (first-year/freshman) applicant">First-year Freshman</option>
                                                 <option value="University Student (transfer applicant)">Transfer Student</option>
                                             </select>
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">High School Major</label>
-                                            <input type="text" className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium" placeholder="e.g. PCM, HEG" value={manualForm.major_highschool} onChange={(e) => setManualForm({...manualForm, major_highschool: e.target.value})} />
+                                            <input type="text" className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium" placeholder="e.g. PCM, HEG" value={manualForm.major_highschool} onChange={(e) => setManualForm({ ...manualForm, major_highschool: e.target.value })} />
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Current GPA/Grades</label>
-                                            <input type="text" className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-bold text-emerald-600 placeholder:text-slate-300" placeholder="e.g. 75/100" value={manualForm.gpa} onChange={(e) => setManualForm({...manualForm, gpa: e.target.value})} />
+                                            <input type="text" className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-bold text-emerald-600 placeholder:text-slate-300" placeholder="e.g. 75/100" value={manualForm.gpa} onChange={(e) => setManualForm({ ...manualForm, gpa: e.target.value })} />
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Intended Field</label>
-                                            <input type="text" className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium" placeholder="Engineering, Medicine..." value={manualForm.intended_field} onChange={(e) => setManualForm({...manualForm, intended_field: e.target.value})} />
+                                            <input type="text" className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium" placeholder="Engineering, Medicine..." value={manualForm.intended_field} onChange={(e) => setManualForm({ ...manualForm, intended_field: e.target.value })} />
                                         </div>
                                     </div>
                                 </div>
@@ -522,7 +523,7 @@ const AdminDashboard = ({ user }) => {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Target Countries</label>
-                                            <select className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-bold text-slate-700" value={manualForm.target_countries} onChange={(e) => setManualForm({...manualForm, target_countries: e.target.value})}>
+                                            <select className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-bold text-slate-700" value={manualForm.target_countries} onChange={(e) => setManualForm({ ...manualForm, target_countries: e.target.value })}>
                                                 <option>United States</option>
                                                 <option>Rwanda</option>
                                                 <option>Canada</option>
@@ -532,7 +533,7 @@ const AdminDashboard = ({ user }) => {
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Service Package</label>
-                                            <select className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-bold text-slate-700" value={manualForm.package} onChange={(e) => setManualForm({...manualForm, package: e.target.value})}>
+                                            <select className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-bold text-slate-700" value={manualForm.package} onChange={(e) => setManualForm({ ...manualForm, package: e.target.value })}>
                                                 <option>Essential</option>
                                                 <option>Comprehensive</option>
                                                 <option>Premium</option>
@@ -542,20 +543,20 @@ const AdminDashboard = ({ user }) => {
                                     </div>
                                     <div className="space-y-2">
                                         <label className="text-xs font-bold text-slate-500 uppercase tracking-widest">Student Goals / Admin Notes</label>
-                                        <textarea rows="4" className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium resize-none" placeholder="Provide extra context about the student..." value={manualForm.goals} onChange={(e) => setManualForm({...manualForm, goals: e.target.value})}></textarea>
+                                        <textarea rows="4" className="w-full p-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-primary-600 outline-none font-medium resize-none" placeholder="Provide extra context about the student..." value={manualForm.goals} onChange={(e) => setManualForm({ ...manualForm, goals: e.target.value })}></textarea>
                                     </div>
                                 </div>
 
                                 <div className="sticky bottom-0 bg-white/90 backdrop-blur pt-6 pb-2 z-10 border-t border-slate-100 flex gap-4">
-                                    <button 
+                                    <button
                                         type="button"
                                         onClick={() => setIsRegisterModalOpen(false)}
                                         className="flex-1 py-4 bg-slate-100 text-slate-600 rounded-2xl font-bold hover:bg-slate-200 transition-all"
                                     >
                                         Discard
                                     </button>
-                                    <button 
-                                        type="submit" 
+                                    <button
+                                        type="submit"
                                         disabled={registering}
                                         className="flex-[2] py-4 bg-primary-600 text-white rounded-2xl font-bold font-display text-lg shadow-xl shadow-primary-500/30 hover:bg-primary-700 hover:-translate-y-1 transition-all flex items-center justify-center gap-3"
                                     >

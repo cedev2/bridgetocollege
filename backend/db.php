@@ -1,9 +1,44 @@
 <?php
 // db.php - Database connection helper
-$host = 'localhost';
-$dbname = 'bridge_to_college';
-$user = 'root'; // Default XAMPP user
-$pass = ''; // Default XAMPP password
+
+// Helper for CORS and JSON response
+function json_response($data, $code = 200) {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+    header('Content-Type: application/json');
+    http_response_code($code);
+    echo json_encode($data);
+    exit;
+}
+
+// Handle preflight requests
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
+    exit;
+}
+
+/**
+ * Basic .env parser
+ */
+function load_env($path) {
+    if (!file_exists($path)) return;
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue;
+        list($name, $value) = explode('=', $line, 2);
+        putenv(trim($name) . '=' . trim($value));
+    }
+}
+
+// Load environment variables
+load_env(__DIR__ . '/../.env');
+
+$host = getenv('DB_HOST') ?: 'localhost';
+$dbname = getenv('DB_NAME') ?: 'bridge_to_college';
+$user = getenv('DB_USER') ?: 'root';
+$pass = getenv('DB_PASS') !== false ? getenv('DB_PASS') : '';
 
 require_once 'jwt_helper.php';
 
@@ -12,7 +47,10 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+    json_response([
+        'error' => 'Database connection failed',
+        'details' => $e->getMessage() // Note: In production, might want to hide details
+    ], 500);
 }
 
 // Global Auth Middleware
@@ -46,24 +84,5 @@ function log_action($userId, $action, $details = null) {
     } catch (Exception $e) {
         // Fail silently to avoid interrupting the main flow
     }
-}
-
-// Helper for CORS and JSON response
-function json_response($data, $code = 200) {
-    header('Access-Control-Allow-Origin: *');
-    // header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization');
-    header('Content-Type: application/json');
-    http_response_code($code);
-    echo json_encode($data);
-    exit;
-}
-
-// Handle preflight requests
-if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, Authorization');
-    exit;
 }
 ?>

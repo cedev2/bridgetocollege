@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost/brigdetocollege/backend';
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost/bridgetocollege/backend';
 
 /**
  * Enhanced fetch wrapper that handles:
@@ -8,7 +8,7 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost/brigdeto
  */
 export const apiFetch = async (endpoint, options = {}) => {
     const url = endpoint.startsWith('http') ? endpoint : `${BASE_URL}/${endpoint}`;
-    
+
     // Get latest user from localStorage
     const savedUser = localStorage.getItem('btc_user');
     let token = null;
@@ -39,11 +39,27 @@ export const apiFetch = async (endpoint, options = {}) => {
     if (response.status === 401) {
         console.warn('Session expired. Redirecting to login...');
         localStorage.removeItem('btc_user');
-        // We use window.location because we are outside the React context
         if (!window.location.pathname.includes('/login')) {
             window.location.href = '/login?expired=true';
         }
     }
+
+    // Proxy the json() method to handle potential parsing errors
+    const originalJson = response.json.bind(response);
+    response.json = async () => {
+        const text = await response.text();
+        try {
+            return JSON.parse(text);
+        } catch (e) {
+            console.error('API Parse Error:', e, 'Response Text:', text);
+            // Return a standard error shape if parsing fails
+            return {
+                error: 'Invalid server response',
+                _raw: text,
+                _isParseError: true
+            };
+        }
+    };
 
     return response;
 };

@@ -14,7 +14,7 @@ import {
     MessageSquare,
     BarChart2
 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { apiFetch, getImageUrl } from '../utils/api';
 
 const DashboardLayout = ({ user, logout, children }) => {

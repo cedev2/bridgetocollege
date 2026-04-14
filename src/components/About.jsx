@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import { apiFetch, getImageUrl } from '../utils/api';
 import { Shield, Target, Award, Users, Phone, Loader2 } from 'lucide-react';

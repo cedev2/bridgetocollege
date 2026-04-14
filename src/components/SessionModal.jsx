@@ -1,5 +1,5 @@
 import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { AlertTriangle, LogOut, RefreshCw } from 'lucide-react';
 
 const SessionModal = ({ isOpen, onConfirm, onLogout }) => {

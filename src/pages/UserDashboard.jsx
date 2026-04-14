@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { CheckCircle2, Clock, XCircle, FileText, Send, User } from 'lucide-react';
 import { apiFetch, getImageUrl } from '../utils/api';
 
@@ -61,7 +61,7 @@ const UserDashboard = ({ user }) => {
                 <div className="grid lg:grid-cols-3 gap-8">
                     {/* Status Card */}
                     <div className="lg:col-span-2 space-y-8">
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden"
@@ -115,7 +115,7 @@ const UserDashboard = ({ user }) => {
 
                         {/* History Table */}
                         {submissions.length > 1 && (
-                            <motion.div 
+                            <motion.div
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.1 }}
@@ -153,7 +153,7 @@ const UserDashboard = ({ user }) => {
                     </div>
 
                     {/* Profile Card */}
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
@@ -162,9 +162,9 @@ const UserDashboard = ({ user }) => {
                         <div className="flex flex-col items-center mb-8 pb-8 border-b border-slate-100">
                             <div className="w-24 h-24 rounded-2xl overflow-hidden shadow-lg border-2 border-slate-50 mb-4 bg-slate-100 flex items-center justify-center">
                                 {user?.profile_picture ? (
-                                    <img 
-                                        src={getImageUrl(user.profile_picture)} 
-                                        className="w-full h-full object-cover" 
+                                    <img
+                                        src={getImageUrl(user.profile_picture)}
+                                        className="w-full h-full object-cover"
                                     />
                                 ) : (
                                     <User className="w-10 h-10 text-slate-300" />

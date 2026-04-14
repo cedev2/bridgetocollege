@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { 
     User, Mail, Lock, Save, Loader2, CheckCircle2, 
     Camera
